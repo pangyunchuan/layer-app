@@ -1,7 +1,9 @@
 {
-  "name": "isd_pc",
+  "name": "reqorm",
   "version": "0.1.0",
   "private": true,
+  "main": "dist/my-lib.umd.js",
+  "module": "dist/my-lib.es.js",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
