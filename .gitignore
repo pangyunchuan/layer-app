@@ -1,0 +1,19 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+
+/src/config/local.ts
+/components.d.ts
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+/.VSCodeCounter
+
