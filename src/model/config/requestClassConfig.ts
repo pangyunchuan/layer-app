@@ -1,5 +1,4 @@
 import DemoRequest from "@/packages/Request/DemoRequest";
-import loadingClassConfig from "@/model/config/loadingClassConfig";
 
 const defaultConfig = {
     default: DemoRequest,
@@ -11,7 +10,7 @@ let requestClassConfig = {...defaultConfig, ...userConfig}
 
 export function updateConfig(s: any) {
     userConfig = s;
-    Object.assign(loadingClassConfig,defaultConfig,userConfig)
+    Object.assign(requestClassConfig,defaultConfig,userConfig)
 }
 
 export type reqKeys = keyof typeof requestClassConfig

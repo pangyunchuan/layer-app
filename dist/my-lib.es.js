@@ -9519,7 +9519,7 @@ let userConfig = {};
 let requestClassConfig = __spreadValues(__spreadValues({}, defaultConfig), userConfig);
 function updateConfig(s) {
   userConfig = s;
-  Object.assign(loadingClassConfig, defaultConfig, userConfig);
+  Object.assign(requestClassConfig, defaultConfig, userConfig);
 }
 class RequestModel extends BaseModel {
   constructor() {
