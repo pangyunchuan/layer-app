@@ -9,10 +9,11 @@ const defaultConfig = {
 
 let userConfig = {}
 
-const loadingClassConfig = {...defaultConfig, ...userConfig}
+let loadingClassConfig = {...defaultConfig, ...userConfig}
 
 export function updateConfig(s: any) {
     userConfig = s;
+    loadingClassConfig = {...defaultConfig, ...userConfig}
 }
 
 //使用配置文件

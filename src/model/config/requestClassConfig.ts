@@ -6,10 +6,11 @@ const defaultConfig = {
 };
 let userConfig = {}
 
-const requestClassConfig = {...defaultConfig, ...userConfig}
+let requestClassConfig = {...defaultConfig, ...userConfig}
 
 export function updateConfig(s: any) {
     userConfig = s;
+    requestClassConfig = {...defaultConfig, ...userConfig}
 }
 
 export type reqKeys = keyof typeof requestClassConfig
