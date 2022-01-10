@@ -5,11 +5,11 @@
   "files": [
     "dist",
     "src/packages",
-    "lib/src/packages"
+    "lib/index.d.ts"
   ],
   "main": "./dist/my-lib.umd.js",
   "module": "./dist/my-lib.es.js",
-  "types": "lib/src/packages",
+  "types": "lib/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/my-lib.es.js",
