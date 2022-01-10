@@ -9411,7 +9411,7 @@ let userConfig$1 = {};
 let loadingClassConfig = __spreadValues(__spreadValues({}, defaultConfig$1), userConfig$1);
 function updateConfig$1(s) {
   userConfig$1 = s;
-  loadingClassConfig = __spreadValues(__spreadValues({}, defaultConfig$1), userConfig$1);
+  Object.assign(loadingClassConfig, defaultConfig$1, userConfig$1);
 }
 new ElPlusLoading().setDefaultConfig({
   target: "body",
@@ -9419,7 +9419,6 @@ new ElPlusLoading().setDefaultConfig({
   spinner: "el-icon-loading",
   background: "rgba(50, 50, 50, 0.5)"
 });
-var loadingClassConfig$1 = loadingClassConfig;
 class LoadingRequest extends BaseRequest {
   constructor() {
     super(...arguments);
@@ -9432,7 +9431,7 @@ class LoadingRequest extends BaseRequest {
     return this;
   }
   setLoading(options = {}, type = "default") {
-    this.loading = new loadingClassConfig$1[type](options);
+    this.loading = new loadingClassConfig[type](options);
     return this;
   }
   getLoading() {
@@ -9520,9 +9519,8 @@ let userConfig = {};
 let requestClassConfig = __spreadValues(__spreadValues({}, defaultConfig), userConfig);
 function updateConfig(s) {
   userConfig = s;
-  requestClassConfig = __spreadValues(__spreadValues({}, defaultConfig), userConfig);
+  Object.assign(loadingClassConfig, defaultConfig, userConfig);
 }
-var requestClassConfig$1 = requestClassConfig;
 class RequestModel extends BaseModel {
   constructor() {
     super(...arguments);
@@ -9536,7 +9534,7 @@ class RequestModel extends BaseModel {
     return self2.newReq(reqType);
   }
   newReq(reqType = "default") {
-    const reqClass = new requestClassConfig$1[reqType]();
+    const reqClass = new requestClassConfig[reqType]();
     if (!reqClass) {
       throw new Error(`${reqType} \u8BF7\u6C42\u7C7B \u4E0D\u5B58\u5728`);
     }
