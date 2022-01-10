@@ -1,7 +1,7 @@
 import RequestModel from "../src/packages/Models/RequestModel";
 import BaseModel from "../src/packages/Models/BaseModel";
 import LoadingRequest from "../src/packages/Request/LoadingRequest";
-import {updateConfig as setLoadingClassConfig,getLoadingInstanceByKey,loadingOptionsType} from "../src/model/config/loadingClassConfig";
+import {updateConfig as setLoadingClassConfig} from "../src/model/config/loadingClassConfig";
 import {updateConfig as setRequestClassConfig} from "../src/model/config/requestClassConfig";
 
 

@@ -2,8 +2,18 @@
   "name": "reqorm",
   "version": "0.1.0",
   "private": true,
-  "main": "dist/my-lib.umd.js",
-  "module": "dist/my-lib.es.js",
+  "files": [
+    "dist",
+    "src/packages"
+  ],
+  "main": "./dist/my-lib.umd.js",
+  "module": "./dist/my-lib.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/my-lib.es.js",
+      "require": "./dist/my-lib.umd.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
