@@ -4,10 +4,12 @@
   "private": true,
   "files": [
     "dist",
-    "src/packages"
+    "src/packages",
+    "index.d.ts"
   ],
   "main": "./dist/my-lib.umd.js",
   "module": "./dist/my-lib.es.js",
+  "types": "./index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/my-lib.es.js",
