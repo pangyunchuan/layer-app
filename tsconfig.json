@@ -6,7 +6,6 @@
     "moduleResolution": "node",
     "strict": true,
     "jsx": "preserve",
-    "sourceMap": true,
     "declaration": true,
     "declarationDir": "./lib",
     "resolveJsonModule": true,
@@ -16,6 +15,7 @@
       "esnext",
       "dom"
     ],
+    "sourceMap": false,
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "rootDir": ".",
