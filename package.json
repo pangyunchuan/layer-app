@@ -5,7 +5,8 @@
   "files": [
     "dist",
     "src/packages",
-    "lib/index.d.ts"
+    "lib/index.d.ts",
+    "lib/src"
   ],
   "main": "./dist/my-lib.umd.js",
   "module": "./dist/my-lib.es.js",
