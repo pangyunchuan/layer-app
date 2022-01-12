@@ -5,6 +5,7 @@
   "files": [
     "dist",
     "lib/packages",
+    "lib/config",
     "lib/index.d.ts",
     "lib/dts"
   ],
