@@ -1,5 +1,6 @@
 import ElPlusLoading from "../Loading/ElPlusLoading";
 import VantToastLoading from "../Loading/VantToastLoading";
+import requestClassConfig from "./requestClassConfig";
 
 
 let loadingClassConfig = {
@@ -9,7 +10,7 @@ let loadingClassConfig = {
 }
 
 export function setLoadingClassConfig(s: any) {
-    loadingClassConfig = s;
+    Object.assign(loadingClassConfig,  s)
 }
 
 //使用配置文件

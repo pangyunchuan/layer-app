@@ -6,7 +6,7 @@ let requestClassConfig = {
 }
 
 export function setRequestClassConfig(s: any) {
-    requestClassConfig = s;
+    Object.assign(requestClassConfig, s)
 }
 
 export type reqKeys = keyof typeof requestClassConfig

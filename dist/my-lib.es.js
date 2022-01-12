@@ -260,7 +260,7 @@ let loadingClassConfig = {
   elPlus: ElPlusLoading
 };
 function setLoadingClassConfig(s) {
-  loadingClassConfig = s;
+  Object.assign(loadingClassConfig, s);
 }
 new ElPlusLoading().setDefaultConfig({
   target: "body",
@@ -268,7 +268,6 @@ new ElPlusLoading().setDefaultConfig({
   spinner: "el-icon-loading",
   background: "rgba(50, 50, 50, 0.5)"
 });
-var loadingClassConfig$1 = loadingClassConfig;
 class LoadingRequest extends BaseRequest {
   constructor() {
     super(...arguments);
@@ -281,7 +280,7 @@ class LoadingRequest extends BaseRequest {
     return this;
   }
   setLoading(options = {}, type = "default") {
-    this.loading = new loadingClassConfig$1[type](options);
+    this.loading = new loadingClassConfig[type](options);
     return this;
   }
   getLoading() {
@@ -366,9 +365,8 @@ let requestClassConfig = {
   demo: DemoRequest
 };
 function setRequestClassConfig(s) {
-  requestClassConfig = s;
+  Object.assign(requestClassConfig, {}, s);
 }
-var requestClassConfig$1 = requestClassConfig;
 class RequestModel extends BaseModel {
   constructor() {
     super(...arguments);
@@ -379,7 +377,7 @@ class RequestModel extends BaseModel {
     return self.newReq(reqType);
   }
   newReq(reqType = "default") {
-    const reqClass = new requestClassConfig$1[reqType]();
+    const reqClass = new requestClassConfig[reqType]();
     if (!reqClass) {
       throw new Error(`${reqType} \u8BF7\u6C42\u7C7B \u4E0D\u5B58\u5728`);
     }
