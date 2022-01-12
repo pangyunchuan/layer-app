@@ -3,9 +3,6 @@ node_modules
 dist-ssr
 *.local
 
-/src/config/local.ts
-/components.d.ts
-
 # Editor directories and files
 .idea
 .vscode
@@ -15,5 +12,3 @@ dist-ssr
 *.sln
 *.sw?
 /.VSCodeCounter
-src/*.js
-lib/*.js

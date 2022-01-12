@@ -1,5 +1,5 @@
 import BaseRequest, { IRequestConfig } from "./BaseRequest";
-import { loadingOptionsType, loadingKeys } from "../../config/loadingClassConfig";
+import { loadingOptionsType, loadingKeys } from "../config/loadingClassConfig";
 import RequestModel from "../Models/RequestModel";
 export default abstract class LoadingRequest extends BaseRequest {
     protected isDefaultUseLoading: boolean;

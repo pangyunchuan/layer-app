@@ -1,5 +1,5 @@
 import BaseModel from "./BaseModel";
-import { instanceTypeByKey, reqKeys } from "../../config/requestClassConfig";
+import { instanceTypeByKey, reqKeys } from "../config/requestClassConfig";
 export default abstract class RequestModel<ModelData extends object> extends BaseModel<ModelData> {
     protected defaultUseLoading: boolean;
     protected static newReq<Child extends RequestModel<any>, ReqType extends reqKeys = "default">(this: new () => Child, reqType?: ReqType): instanceTypeByKey[ReqType];

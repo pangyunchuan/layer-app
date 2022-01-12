@@ -1,8 +1,8 @@
-import RequestModel from "./packages/Models/RequestModel";
-import LoadingRequest from "./packages/Request/LoadingRequest";
-import {updateConfig as setLoadingClassConfig} from "./config/loadingClassConfig";
-import {updateConfig as setRequestClassConfig} from "./config/requestClassConfig";
-import BaseLoading from "./packages/Loading/BaseLoading";
+import RequestModel from "./Models/RequestModel";
+import LoadingRequest from "./Request/LoadingRequest";
+import {setLoadingClassConfig} from "./config/loadingClassConfig";
+import {setRequestClassConfig} from "./config/requestClassConfig";
+import BaseLoading from "./Loading/BaseLoading";
 
 
 // const fs = require('fs')

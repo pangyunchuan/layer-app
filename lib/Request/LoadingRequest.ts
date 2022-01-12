@@ -2,7 +2,7 @@ import BaseRequest, { IRequestConfig } from "./BaseRequest";
 import loadingClassConfig, {
   loadingOptionsType,
   loadingKeys
-} from "../../config/loadingClassConfig";
+} from "../config/loadingClassConfig";
 import BaseLoading from "../Loading/BaseLoading";
 import RequestModel from "../Models/RequestModel";
 import { omit } from "lodash-es";

@@ -1,5 +1,5 @@
-import ElPlusLoading from "../../lib/packages/Loading/ElPlusLoading";
-import VantToastLoading from "../../lib/packages/Loading/VantToastLoading";
+import ElPlusLoading from "../Loading/ElPlusLoading";
+import VantToastLoading from "../Loading/VantToastLoading";
 
 
 let loadingClassConfig = {
@@ -8,7 +8,7 @@ let loadingClassConfig = {
     elPlus: ElPlusLoading
 }
 
-export function updateConfig(s: any) {
+export function setLoadingClassConfig(s: any) {
     loadingClassConfig = s;
 }
 

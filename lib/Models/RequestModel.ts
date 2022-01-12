@@ -1,5 +1,5 @@
 import BaseModel from "./BaseModel";
-import requestClassConfig, { instanceTypeByKey, reqKeys } from "../../config/requestClassConfig";
+import requestClassConfig, { instanceTypeByKey, reqKeys } from "../config/requestClassConfig";
 
 //接口请求模型
 export default abstract class RequestModel<ModelData extends object> extends BaseModel<ModelData> {

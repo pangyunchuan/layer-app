@@ -1,11 +1,11 @@
-import DemoRequest from "../packages/Request/DemoRequest";
+import DemoRequest from "../Request/DemoRequest";
 
 let requestClassConfig = {
     default: DemoRequest,
     demo: DemoRequest
 }
 
-export function updateConfig(s: any) {
+export function setRequestClassConfig(s: any) {
     requestClassConfig = s;
 }
 
