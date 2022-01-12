@@ -4,8 +4,7 @@
   "private": true,
   "files": [
     "dist",
-    "lib/index.d.ts",
-    "lib/dts"
+    "lib"
   ],
   "main": "./dist/my-lib.umd.js",
   "module": "./dist/my-lib.es.js",
