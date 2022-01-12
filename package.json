@@ -6,7 +6,7 @@
     "dist",
     "lib/packages",
     "lib/index.d.ts",
-    "lib/src"
+    "lib/dts"
   ],
   "main": "./dist/my-lib.umd.js",
   "module": "./dist/my-lib.es.js",
