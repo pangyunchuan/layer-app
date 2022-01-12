@@ -131,8 +131,8 @@ const _BaseLoading = class {
     __publicField(this, "options", {});
     __publicField(this, "_waitLoading");
     __publicField(this, "_waitClose");
-    const defaultConfig2 = _BaseLoading.defaultConfigByClassName[this.classname] || {};
-    this.options = __spreadValues(__spreadValues(__spreadValues({}, this.options), defaultConfig2), inputConfig);
+    const defaultConfig = _BaseLoading.defaultConfigByClassName[this.classname] || {};
+    this.options = __spreadValues(__spreadValues(__spreadValues({}, this.options), defaultConfig), inputConfig);
     this.isFull = this.getIsFull();
     return this;
   }
@@ -254,16 +254,13 @@ class VantToastLoading extends BaseLoading {
     }
   }
 }
-const defaultConfig$1 = {
+let loadingClassConfig = {
   default: ElPlusLoading,
   vantToast: VantToastLoading,
   elPlus: ElPlusLoading
 };
-let userConfig$1 = {};
-let loadingClassConfig = __spreadValues(__spreadValues({}, defaultConfig$1), userConfig$1);
-function updateConfig$1(s) {
-  userConfig$1 = s;
-  Object.assign(loadingClassConfig, defaultConfig$1, userConfig$1);
+function setLoadingClassConfig(s) {
+  loadingClassConfig = s;
 }
 new ElPlusLoading().setDefaultConfig({
   target: "body",
@@ -271,6 +268,7 @@ new ElPlusLoading().setDefaultConfig({
   spinner: "el-icon-loading",
   background: "rgba(50, 50, 50, 0.5)"
 });
+var loadingClassConfig$1 = loadingClassConfig;
 class LoadingRequest extends BaseRequest {
   constructor() {
     super(...arguments);
@@ -283,7 +281,7 @@ class LoadingRequest extends BaseRequest {
     return this;
   }
   setLoading(options = {}, type = "default") {
-    this.loading = new loadingClassConfig[type](options);
+    this.loading = new loadingClassConfig$1[type](options);
     return this;
   }
   getLoading() {
@@ -363,16 +361,14 @@ class DemoRequest extends LoadingRequest {
     return this.error;
   }
 }
-const defaultConfig = {
+let requestClassConfig = {
   default: DemoRequest,
   demo: DemoRequest
 };
-let userConfig = {};
-let requestClassConfig = __spreadValues(__spreadValues({}, defaultConfig), userConfig);
-function updateConfig(s) {
-  userConfig = s;
-  Object.assign(requestClassConfig, defaultConfig, userConfig);
+function setRequestClassConfig(s) {
+  requestClassConfig = s;
 }
+var requestClassConfig$1 = requestClassConfig;
 class RequestModel extends BaseModel {
   constructor() {
     super(...arguments);
@@ -383,7 +379,7 @@ class RequestModel extends BaseModel {
     return self.newReq(reqType);
   }
   newReq(reqType = "default") {
-    const reqClass = new requestClassConfig[reqType]();
+    const reqClass = new requestClassConfig$1[reqType]();
     if (!reqClass) {
       throw new Error(`${reqType} \u8BF7\u6C42\u7C7B \u4E0D\u5B58\u5728`);
     }
@@ -396,4 +392,4 @@ class RequestModel extends BaseModel {
     return model.proxyData();
   }
 }
-export { BaseLoading, LoadingRequest, RequestModel, updateConfig$1 as setLoadingClassConfig, updateConfig as setRequestClassConfig };
+export { BaseLoading, LoadingRequest, RequestModel, setLoadingClassConfig, setRequestClassConfig };
