@@ -4,7 +4,7 @@
   "private": true,
   "files": [
     "dist",
-    "src/packages",
+    "lib/packages",
     "lib/index.d.ts",
     "lib/src"
   ],

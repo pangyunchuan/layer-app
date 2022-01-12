@@ -2,7 +2,6 @@ import {defineConfig, loadEnv} from "vite";
 import vue from "@vitejs/plugin-vue";
 import {name} from "./package.json";
 import dayjs from "dayjs";
-import viteCompression from "vite-plugin-compression";
 import * as path from "path";
 
 const daytime = dayjs().format("YYMMDD_HHmm");
@@ -13,14 +12,7 @@ export default defineConfig(({mode}) => {
     let env = loadEnv(mode, "");
     return {
         plugins: [
-            vue({reactivityTransform: true}),
-            //生成gzip文件,默认不压缩
-            viteCompression({
-                filter: /\.(js|mjs|json|css|png|jpg|jpeg)$/i, //要压缩的文件
-                threshold: 5 * 1024, //超过该值得才压缩 （字节）
-                disable: true, //是否停用压缩
-                deleteOriginFile: false //压缩后是否删除源文件
-            })
+            vue({reactivityTransform: true})
         ],
         // base 不能配置 ./
         base: "",
@@ -31,15 +23,7 @@ export default defineConfig(({mode}) => {
         resolve: {
             alias: [
                 {
-                    find: /^~@/,
-                    replacement: "/src"
-                },
-                {
                     find: "@/",
-                    replacement: "/src/"
-                },
-                {
-                    find: "WebOrm/",
                     replacement: "/src/"
                 }
             ],
@@ -49,10 +33,20 @@ export default defineConfig(({mode}) => {
         build: {
             assetsDir: assetsDir,
             rollupOptions: {
+                // 确保外部化处理那些你不想打包进库的依赖
+                external: ['element-plus','vant','lodash-es','axios'],
                 output: {
+                    // // // 在 UMD 构建模式下为这些外部化的依赖提供一个全局变量
+                    globals: {
+                        'element-plus': 'element-plus',
+                        'vant': 'vant',
+                        'lodash-es': 'lodash-es',
+                        'axios':'axios'
+                    },
                     assetFileNames: `${assetsDir}/[ext]/[name]-[hash][extname]`,
                     chunkFileNames: `${assetsDir}/js/[name]-[hash].js`,
-                }
+                },
+
             },
             lib: {
                 entry: path.resolve(__dirname, 'lib/main.ts'),

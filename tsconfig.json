@@ -7,7 +7,7 @@
     "strict": true,
     "jsx": "preserve",
     "declaration": true,
-    "declarationDir": "./lib",
+    "declarationDir": "./lib/dts",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "allowJs": true,
@@ -23,12 +23,6 @@
     "paths": {
       "@/*": [
         "src/*"
-      ],
-      "WebOrm/*": [
-        "src/*"
-      ],
-      "~@/*": [
-        "src/*"
       ]
     }
   },
@@ -38,6 +32,7 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "src/**/*.js",
-    "src/**/*.jsx"
+    "src/**/*.jsx",
+    "lib/**/*.ts"
   ]
 }

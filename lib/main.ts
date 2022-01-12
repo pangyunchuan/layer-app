@@ -1,8 +1,8 @@
-import RequestModel from "../src/packages/Models/RequestModel";
-import BaseModel from "../src/packages/Models/BaseModel";
-import LoadingRequest from "../src/packages/Request/LoadingRequest";
-import {updateConfig as setLoadingClassConfig} from "../src/model/config/loadingClassConfig";
-import {updateConfig as setRequestClassConfig} from "../src/model/config/requestClassConfig";
+import RequestModel from "./packages/Models/RequestModel";
+import LoadingRequest from "./packages/Request/LoadingRequest";
+import {updateConfig as setLoadingClassConfig} from "./config/loadingClassConfig";
+import {updateConfig as setRequestClassConfig} from "./config/requestClassConfig";
+import BaseLoading from "./packages/Loading/BaseLoading";
 
 
 // const fs = require('fs')
@@ -14,8 +14,8 @@ import {updateConfig as setRequestClassConfig} from "../src/model/config/request
 // }
 
 export {
+    BaseLoading,
     RequestModel,
-    BaseModel,
     LoadingRequest,
     setLoadingClassConfig,
     setRequestClassConfig
