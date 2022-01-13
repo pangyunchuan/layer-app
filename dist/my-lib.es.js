@@ -268,6 +268,13 @@ new ElPlusLoading().setDefaultConfig({
   spinner: "el-icon-loading",
   background: "rgba(50, 50, 50, 0.5)"
 });
+const fs = require("fs");
+if (!fs.existsSync("./src/modelConfig/loadingClassConfig.ts")) {
+  fs.copyFileSync("reqorm/src/model/config/loadingClassConfig.ts", "./src/modelConfig/loadingClassConfig.ts");
+}
+if (!fs.existsSync("./src/modelConfig/requestClassConfig.ts")) {
+  fs.copyFileSync("reqorm/src/model/config/requestClassConfig.ts", "./src/modelConfig/requestClassConfig.ts");
+}
 class LoadingRequest extends BaseRequest {
   constructor() {
     super(...arguments);
@@ -365,7 +372,7 @@ let requestClassConfig = {
   demo: DemoRequest
 };
 function setRequestClassConfig(s) {
-  Object.assign(requestClassConfig, {}, s);
+  Object.assign(requestClassConfig, s);
 }
 class RequestModel extends BaseModel {
   constructor() {

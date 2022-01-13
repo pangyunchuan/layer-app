@@ -1,9 +1,4 @@
-import DemoRequest from "../Request/DemoRequest";
-
-let requestClassConfig = {
-    default: DemoRequest,
-    demo: DemoRequest
-}
+import {requestClassConfig} from "root/modelConfig/modelConfig";
 
 export function setRequestClassConfig(s: any) {
     Object.assign(requestClassConfig, s)

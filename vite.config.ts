@@ -25,6 +25,10 @@ export default defineConfig(({mode}) => {
                 {
                     find: "@/",
                     replacement: "/src/"
+                },
+                {
+                    find: "root/",
+                    replacement: "/"
                 }
             ],
             extensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json", ".vue"]
