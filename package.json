@@ -19,7 +19,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "postinstall": "./modelConfig/nodeBuildConfig.js",
+    "postinstall": "node ./modelConfig/nodeBuildConfig.js",
     "serve": "vite preview"
   },
   "dependencies": {
