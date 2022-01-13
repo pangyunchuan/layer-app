@@ -1,5 +1,4 @@
 import { loadingClassConfig } from "root/modelConfig/modelConfig";
-export declare function setLoadingClassConfig(s: any): void;
 export declare type loadingKeys = keyof typeof loadingClassConfig;
 export declare type getLoadingInstanceByKey = {
     [K in loadingKeys]: InstanceType<(typeof loadingClassConfig)[K]>;

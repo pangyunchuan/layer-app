@@ -21,10 +21,9 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
+import { requestClassConfig, loadingClassConfig } from "root/modelConfig/modelConfig";
 import axios from "axios";
-import { debounce, omit } from "lodash-es";
-import { ElLoading } from "element-plus";
-import { Toast } from "vant";
+import { omit, debounce } from "lodash-es";
 class BaseModel {
   constructor() {
     __publicField(this, "_dataType", {});
@@ -55,6 +54,29 @@ class BaseModel {
         return p in target || target.data && p in target.data;
       }
     });
+  }
+}
+class RequestModel extends BaseModel {
+  constructor() {
+    super(...arguments);
+    __publicField(this, "defaultUseLoading", true);
+  }
+  static newReq(reqType = "default") {
+    const self = new this();
+    return self.newReq(reqType);
+  }
+  newReq(reqType = "default") {
+    const reqClass = new requestClassConfig[reqType]();
+    if (!reqClass) {
+      throw new Error(`${reqType} \u8BF7\u6C42\u7C7B \u4E0D\u5B58\u5728`);
+    }
+    return reqClass.setModel(this).setUseLoading(this.defaultUseLoading);
+  }
+  newFromReq(Model, data, call) {
+    const model = new Model();
+    model.data = data;
+    call && call(model);
+    return model.proxyData();
   }
 }
 const _BaseRequest = class {
@@ -119,6 +141,80 @@ const _BaseRequest = class {
 };
 let BaseRequest = _BaseRequest;
 __publicField(BaseRequest, "cancelMapByMark", {});
+class LoadingRequest extends BaseRequest {
+  constructor() {
+    super(...arguments);
+    __publicField(this, "isDefaultUseLoading", true);
+    __publicField(this, "loading");
+    __publicField(this, "model");
+  }
+  setUseLoading(use = true) {
+    this.isDefaultUseLoading = use;
+    return this;
+  }
+  setLoading(options = {}, type = "default") {
+    this.loading = new loadingClassConfig[type](options);
+    return this;
+  }
+  getLoading() {
+    if (!this.loading && this.isDefaultUseLoading) {
+      this.setLoading();
+    }
+    return this.loading;
+  }
+  setModel(model) {
+    this.model = model;
+    return this;
+  }
+  getModel() {
+    if (!this.model) {
+      throw new Error("\u8BF7\u5148\u8BBE\u7F6E\u6A21\u578B");
+    }
+    return this.model;
+  }
+  request(config = {}) {
+    let loading = this.getLoading();
+    loading == null ? void 0 : loading.startLoading();
+    return super.request(config).then((r) => {
+      loading == null ? void 0 : loading.endLoading();
+      return r;
+    }).catch((er) => {
+      loading == null ? void 0 : loading.endLoading();
+      throw er;
+    });
+  }
+  reqOne(Model, call) {
+    return this.request().then((res) => {
+      return this.getModel().newFromReq(Model, res, call);
+    });
+  }
+  reqOneOther(Model, dataKey, call) {
+    return this.request().then((res) => {
+      const data = res[dataKey];
+      const model = this.getModel().newFromReq(Model, data, call);
+      return __spreadProps(__spreadValues({}, omit(res, dataKey)), { model });
+    });
+  }
+  reqMany(Model, call) {
+    return this.request().then((res) => {
+      let models = [];
+      for (const da of res) {
+        models.push(this.getModel().newFromReq(Model, da, call));
+      }
+      return models;
+    });
+  }
+  reqManyOther(Model, dataKey, call) {
+    return this.request().then((res) => {
+      const data = res[dataKey];
+      const models = [];
+      for (const da of data) {
+        models.push(this.getModel().newFromReq(Model, da, call));
+      }
+      return __spreadProps(__spreadValues({}, omit(res, dataKey)), { models });
+    });
+  }
+}
 const _BaseLoading = class {
   constructor(inputConfig = {}) {
     __publicField(this, "needWaitLoading", true);
@@ -217,184 +313,4 @@ const _BaseLoading = class {
 let BaseLoading = _BaseLoading;
 __publicField(BaseLoading, "defaultConfigByClassName", {});
 __publicField(BaseLoading, "_firstFullInstMapByClassName", {});
-class ElPlusLoading extends BaseLoading {
-  getIsFull() {
-    if (!this.options.target) {
-      return true;
-    }
-    const { target } = this.options;
-    return (target instanceof HTMLElement ? target.nodeName : target) === "body";
-  }
-  buildLoading() {
-    var _a;
-    const inst = ElLoading.service(this.options);
-    (_a = document.querySelector("body")) == null ? void 0 : _a.classList.remove("el-loading-parent--relative");
-    return inst;
-  }
-  closeLoading(inst) {
-    inst == null ? void 0 : inst.close();
-  }
-  upText(text, inst) {
-    inst == null ? void 0 : inst.setText(text);
-  }
-}
-class VantToastLoading extends BaseLoading {
-  getIsFull() {
-    return true;
-  }
-  buildLoading() {
-    return Toast.loading(this.options);
-  }
-  closeLoading(inst) {
-    inst == null ? void 0 : inst.clear();
-  }
-  upText(text, inst) {
-    if (inst) {
-      inst.messate = text;
-    }
-  }
-}
-let loadingClassConfig = {
-  default: ElPlusLoading,
-  vantToast: VantToastLoading,
-  elPlus: ElPlusLoading
-};
-function setLoadingClassConfig(s) {
-  Object.assign(loadingClassConfig, s);
-}
-new ElPlusLoading().setDefaultConfig({
-  target: "body",
-  text: "\u52A0\u8F7D\u4E2D",
-  spinner: "el-icon-loading",
-  background: "rgba(50, 50, 50, 0.5)"
-});
-const fs = require("fs");
-if (!fs.existsSync("./src/modelConfig/loadingClassConfig.ts")) {
-  fs.copyFileSync("reqorm/src/model/config/loadingClassConfig.ts", "./src/modelConfig/loadingClassConfig.ts");
-}
-if (!fs.existsSync("./src/modelConfig/requestClassConfig.ts")) {
-  fs.copyFileSync("reqorm/src/model/config/requestClassConfig.ts", "./src/modelConfig/requestClassConfig.ts");
-}
-class LoadingRequest extends BaseRequest {
-  constructor() {
-    super(...arguments);
-    __publicField(this, "isDefaultUseLoading", true);
-    __publicField(this, "loading");
-    __publicField(this, "model");
-  }
-  setUseLoading(use = true) {
-    this.isDefaultUseLoading = use;
-    return this;
-  }
-  setLoading(options = {}, type = "default") {
-    this.loading = new loadingClassConfig[type](options);
-    return this;
-  }
-  getLoading() {
-    if (!this.loading && this.isDefaultUseLoading) {
-      this.setLoading();
-    }
-    return this.loading;
-  }
-  setModel(model) {
-    this.model = model;
-    return this;
-  }
-  getModel() {
-    if (!this.model) {
-      throw new Error("\u8BF7\u5148\u8BBE\u7F6E\u6A21\u578B");
-    }
-    return this.model;
-  }
-  request(config = {}) {
-    let loading = this.getLoading();
-    loading == null ? void 0 : loading.startLoading();
-    return super.request(config).then((r) => {
-      loading == null ? void 0 : loading.endLoading();
-      return r;
-    }).catch((er) => {
-      loading == null ? void 0 : loading.endLoading();
-      throw er;
-    });
-  }
-  reqOne(Model, call) {
-    return this.request().then((res) => {
-      return this.getModel().newFromReq(Model, res, call);
-    });
-  }
-  reqOneOther(Model, dataKey, call) {
-    return this.request().then((res) => {
-      const data = res[dataKey];
-      const model = this.getModel().newFromReq(Model, data, call);
-      return __spreadProps(__spreadValues({}, omit(res, dataKey)), { model });
-    });
-  }
-  reqMany(Model, call) {
-    return this.request().then((res) => {
-      let models = [];
-      for (const da of res) {
-        models.push(this.getModel().newFromReq(Model, da, call));
-      }
-      return models;
-    });
-  }
-  reqManyOther(Model, dataKey, call) {
-    return this.request().then((res) => {
-      const data = res[dataKey];
-      const models = [];
-      for (const da of data) {
-        models.push(this.getModel().newFromReq(Model, da, call));
-      }
-      return __spreadProps(__spreadValues({}, omit(res, dataKey)), { models });
-    });
-  }
-}
-class DemoRequest extends LoadingRequest {
-  requestHandle() {
-    let { config } = this;
-    if (!config.headers) {
-      config.headers = {};
-    }
-  }
-  responseHandle() {
-    const { response } = this;
-    if (!response) {
-      throw response;
-    }
-    return response.data.returnContent;
-  }
-  errorHandle() {
-    return this.error;
-  }
-}
-let requestClassConfig = {
-  default: DemoRequest,
-  demo: DemoRequest
-};
-function setRequestClassConfig(s) {
-  Object.assign(requestClassConfig, s);
-}
-class RequestModel extends BaseModel {
-  constructor() {
-    super(...arguments);
-    __publicField(this, "defaultUseLoading", true);
-  }
-  static newReq(reqType = "default") {
-    const self = new this();
-    return self.newReq(reqType);
-  }
-  newReq(reqType = "default") {
-    const reqClass = new requestClassConfig[reqType]();
-    if (!reqClass) {
-      throw new Error(`${reqType} \u8BF7\u6C42\u7C7B \u4E0D\u5B58\u5728`);
-    }
-    return reqClass.setModel(this).setUseLoading(this.defaultUseLoading);
-  }
-  newFromReq(Model, data, call) {
-    const model = new Model();
-    model.data = data;
-    call && call(model);
-    return model.proxyData();
-  }
-}
-export { BaseLoading, LoadingRequest, RequestModel, setLoadingClassConfig, setRequestClassConfig };
+export { BaseLoading, LoadingRequest, RequestModel };

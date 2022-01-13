@@ -1,10 +1,5 @@
 import {loadingClassConfig} from "root/modelConfig/modelConfig";
 
-
-export function setLoadingClassConfig(s: any) {
-    Object.assign(loadingClassConfig, s)
-}
-
 export type loadingKeys = keyof typeof loadingClassConfig
 
 export type getLoadingInstanceByKey = {
