@@ -1,4 +1,4 @@
-import {loadingClassConfig} from "root/modelConfig/modelConfigType";
+import {loadingClassConfig} from "root/modelConfig";
 
 export type loadingKeys = keyof loadingClassConfig
 
@@ -15,6 +15,6 @@ export default function getLoadingMap(): loadingClassConfig {
     return loadingMap;
 }
 
-export function setLoadingMap(map: any) {
+export function setLoadingMap(map: object) {
     loadingMap = map
 }

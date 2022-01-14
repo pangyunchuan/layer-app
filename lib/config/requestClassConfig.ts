@@ -1,5 +1,4 @@
-import {requestClassConfig} from "root/modelConfig/modelConfigType";
-
+import {requestClassConfig} from "root/modelConfig";
 
 export type reqKeys = keyof requestClassConfig
 
@@ -12,6 +11,6 @@ export default function getRequestMap(): requestClassConfig {
     return requestMap;
 }
 
-export function setRequestMap(map: any) {
+export function setRequestMap(map: object) {
     requestMap = map
 }

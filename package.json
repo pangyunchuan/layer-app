@@ -15,7 +15,11 @@
     ".": {
       "import": "./dist/my-lib.es.js",
       "require": "./dist/my-lib.umd.js"
-    }
+    },
+    "./demo/*": "./demo/*"
+  },
+  "bin": {
+    "reqormInit": "bin/init.js"
   },
   "scripts": {
     "dev": "vite",
