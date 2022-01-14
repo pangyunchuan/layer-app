@@ -1,16 +1,20 @@
-import {loadingClassConfig} from "root/modelConfig/modelConfig";
+import {loadingClassConfig} from "root/modelConfig/modelConfigType";
 
-
-export type loadingKeys = keyof typeof loadingClassConfig
+export type loadingKeys = keyof loadingClassConfig
 
 export type getLoadingInstanceByKey = {
-    [K in loadingKeys]: InstanceType<(typeof loadingClassConfig)[K]>
+    [K in loadingKeys]: InstanceType<loadingClassConfig[K]>
 }
 
 export type loadingOptionsType = {
     [K in loadingKeys]: getLoadingInstanceByKey[K]["_options"]
 }
 
-export default function getLoadingMap() {
-    return loadingClassConfig;
+let loadingMap: any = {}
+export default function getLoadingMap(): loadingClassConfig {
+    return loadingMap;
+}
+
+export function setLoadingMap(map: any) {
+    loadingMap = map
 }

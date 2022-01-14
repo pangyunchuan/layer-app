@@ -21,7 +21,6 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { requestClassConfig, loadingClassConfig } from "root/modelConfig/modelConfig";
 import axios from "axios";
 import { omit, debounce } from "lodash-es";
 class BaseModel {
@@ -56,8 +55,12 @@ class BaseModel {
     });
   }
 }
+let requestMap = {};
 function getRequestMap() {
-  return requestClassConfig;
+  return requestMap;
+}
+function setRequestMap(map) {
+  requestMap = map;
 }
 class RequestModel extends BaseModel {
   constructor() {
@@ -145,8 +148,12 @@ const _BaseRequest = class {
 };
 let BaseRequest = _BaseRequest;
 __publicField(BaseRequest, "cancelMapByMark", {});
+let loadingMap = {};
 function getLoadingMap() {
-  return loadingClassConfig;
+  return loadingMap;
+}
+function setLoadingMap(map) {
+  loadingMap = map;
 }
 class LoadingRequest extends BaseRequest {
   constructor() {
@@ -321,4 +328,4 @@ const _BaseLoading = class {
 let BaseLoading = _BaseLoading;
 __publicField(BaseLoading, "defaultConfigByClassName", {});
 __publicField(BaseLoading, "_firstFullInstMapByClassName", {});
-export { BaseLoading, LoadingRequest, RequestModel };
+export { BaseLoading, LoadingRequest, RequestModel, setLoadingMap, setRequestMap };
