@@ -29,6 +29,10 @@
       ],
       "reqorm/*": [
         "*"
+      ],
+      "reqorm": [
+        "./lib/my-lib.es.js",
+        "./lib/my-lib.umd.js"
       ]
     }
   },
@@ -38,7 +42,6 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "src/**/*.js",
-    "src/**/*.jsx",
-    "lib/**/*.ts"
+    "src/**/*.jsx"
   ]
 }

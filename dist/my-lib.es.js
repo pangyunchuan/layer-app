@@ -56,6 +56,7 @@ class BaseModel {
     });
   }
 }
+let base$1 = __spreadValues({}, requestClassConfig);
 class RequestModel extends BaseModel {
   constructor() {
     super(...arguments);
@@ -66,7 +67,7 @@ class RequestModel extends BaseModel {
     return self.newReq(reqType);
   }
   newReq(reqType = "default") {
-    const reqClass = new requestClassConfig[reqType]();
+    const reqClass = new base$1[reqType]();
     if (!reqClass) {
       throw new Error(`${reqType} \u8BF7\u6C42\u7C7B \u4E0D\u5B58\u5728`);
     }
@@ -141,6 +142,7 @@ const _BaseRequest = class {
 };
 let BaseRequest = _BaseRequest;
 __publicField(BaseRequest, "cancelMapByMark", {});
+let base = __spreadValues({}, loadingClassConfig);
 class LoadingRequest extends BaseRequest {
   constructor() {
     super(...arguments);
@@ -153,7 +155,7 @@ class LoadingRequest extends BaseRequest {
     return this;
   }
   setLoading(options = {}, type = "default") {
-    this.loading = new loadingClassConfig[type](options);
+    this.loading = new base[type](options);
     return this;
   }
   getLoading() {
@@ -183,7 +185,7 @@ class LoadingRequest extends BaseRequest {
       throw er;
     });
   }
-  reqOne(Model, call) {
+  reqOreqOne(Model, call) {
     return this.request().then((res) => {
       return this.getModel().newFromReq(Model, res, call);
     });

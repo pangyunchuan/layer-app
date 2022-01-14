@@ -1,9 +1,12 @@
 import {requestClassConfig} from "root/modelConfig/modelConfig";
 
-export type reqKeys = keyof typeof requestClassConfig
+
+let base = {...requestClassConfig}
+
+export type reqKeys = keyof typeof base
 
 export type instanceTypeByKey = {
-    [P in reqKeys]: InstanceType<(typeof requestClassConfig)[P]>
+    [P in reqKeys]: InstanceType<(typeof base)[P]>
 }
 
-export default requestClassConfig;
+export default base;
