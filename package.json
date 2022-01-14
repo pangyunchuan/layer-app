@@ -5,7 +5,8 @@
   "files": [
     "dist",
     "modelConfig",
-    "dts"
+    "dts",
+    "demo"
   ],
   "main": "./dist/my-lib.umd.js",
   "module": "./dist/my-lib.es.js",

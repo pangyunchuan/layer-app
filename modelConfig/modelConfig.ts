@@ -1,6 +1,6 @@
-import ElPlusLoading from "reqorm/lib/Loading/ElPlusLoading";
-import VantToastLoading from "reqorm/lib/Loading/VantToastLoading";
-import DemoRequest from "reqorm/lib/Request/DemoRequest";
+import ElPlusLoading from "root/demo/ElPlusLoading";
+import VantToastLoading from "root/demo/VantToastLoading";
+import DemoRequest from "root/demo/DemoRequest";
 
 export const loadingClassConfig = {
     default: ElPlusLoading,

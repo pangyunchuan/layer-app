@@ -1,4 +1,4 @@
-import BaseLoading from "./BaseLoading";
+import { BaseLoading } from "reqorm";
 import { ToastOptions } from "vant";
 import { ComponentInstance } from "vant/es/utils";
 export default class VantToastLoading extends BaseLoading<ToastOptions, ComponentInstance> {

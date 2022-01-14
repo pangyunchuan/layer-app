@@ -1,5 +1,5 @@
 import BaseRequest, { IRequestConfig } from "./BaseRequest";
-import loadingClassConfig, {
+import getLoadingMap , {
   loadingOptionsType,
   loadingKeys
 } from "../config/loadingClassConfig";
@@ -24,7 +24,8 @@ export default abstract class LoadingRequest extends BaseRequest {
   setLoading<K extends loadingKeys = "default">(
     options: loadingOptionsType[K] = {}, type: K = <K>"default"
   ): this {
-    this.loading = new loadingClassConfig[type](options);
+    const map = getLoadingMap();
+    this.loading = new map[type](options);
     return this;
   }
 
