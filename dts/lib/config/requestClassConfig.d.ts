@@ -1,9 +1,7 @@
-declare let base: {
-    default: typeof import("../Request/DemoRequest").default;
-    demo: typeof import("../Request/DemoRequest").default;
-};
-export declare type reqKeys = keyof typeof base;
+import {requestClassConfig} from "root/modelConfig/modelConfig";
+
+export declare type reqKeys = keyof typeof requestClassConfig;
 export declare type instanceTypeByKey = {
-    [P in reqKeys]: InstanceType<(typeof base)[P]>;
+    [P in reqKeys]: InstanceType<(typeof requestClassConfig)[P]>;
 };
-export default base;
+export default function getRequestMap(): requestClassConfig

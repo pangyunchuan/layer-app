@@ -1,13 +1,9 @@
-declare let base: {
-    default: typeof import("../Loading/ElPlusLoading").default;
-    vantToast: typeof import("../Loading/VantToastLoading").default;
-    elPlus: typeof import("../Loading/ElPlusLoading").default;
-};
-export declare type loadingKeys = keyof typeof base;
+import { loadingClassConfig } from "root/modelConfig/modelConfig";
+export declare type loadingKeys = keyof typeof loadingClassConfig;
 export declare type getLoadingInstanceByKey = {
-    [K in loadingKeys]: InstanceType<(typeof base)[K]>;
+    [K in loadingKeys]: InstanceType<(typeof loadingClassConfig)[K]>;
 };
 export declare type loadingOptionsType = {
     [K in loadingKeys]: getLoadingInstanceByKey[K]["_options"];
 };
-export default base;
+export default function getLoadingMap(): loadingClassConfig;
