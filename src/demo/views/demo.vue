@@ -8,7 +8,7 @@
 // import {RequestModel} from '../../../dist/my-lib.es'
 //
 // console.log(123,RequestModel)
-// import Test from "@/demo/views/test";
+// import Test from "@/example/views/test";
 //
 // Test.tt()
 

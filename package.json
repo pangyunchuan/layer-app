@@ -3,24 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "files": [
-    "bin",
     "dist",
     "modelConfig",
-    "dts",
-    "demo"
+    "types",
+    "example"
   ],
   "main": "./dist/my-lib.umd.js",
   "module": "./dist/my-lib.es.js",
-  "types": "dts/lib/main.d.ts",
+  "types": "types/lib/main.d.ts",
   "exports": {
     ".": {
       "import": "./dist/my-lib.es.js",
       "require": "./dist/my-lib.umd.js"
     },
-    "./demo/*": "./demo/*"
-  },
-  "bin": {
-    "reqormInit": "bin/init.js"
+    "./example/*": "./example/*"
   },
   "scripts": {
     "dev": "vite",
@@ -29,11 +25,11 @@
   },
   "dependencies": {
     "axios": "^0.24.0",
-    "element-plus": "^1.1.0-beta.19",
-    "lodash-es": "^4.17.21",
-    "vant": "^3.2.3"
+    "lodash-es": "^4.17.21"
   },
   "devDependencies": {
+    "element-plus": "^1.1.0-beta.19",
+    "vant": "^3.2.3",
     "reset-css": "^5.0.1",
     "vue-router": "^4.0.11",
     "vue": "^3.2.26",
