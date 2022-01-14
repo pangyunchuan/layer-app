@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "files": [
+    "bin",
     "dist",
     "modelConfig",
     "dts",
@@ -24,7 +25,6 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "postinstall": "node ./modelConfig/nodeBuildConfig.js",
     "serve": "vite preview"
   },
   "dependencies": {
