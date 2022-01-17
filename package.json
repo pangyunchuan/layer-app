@@ -8,6 +8,9 @@
     "types",
     "example"
   ],
+  "bin": {
+    "orminit": "node bin/init.js"
+  },
   "main": "./dist/my-lib.umd.js",
   "module": "./dist/my-lib.es.js",
   "types": "types/lib/main.d.ts",
