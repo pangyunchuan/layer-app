@@ -10,7 +10,7 @@
     "example"
   ],
   "bin": {
-    "orminit": "node bin/init.js"
+    "orminit": "bin/init.js"
   },
   "main": "./dist/my-lib.umd.js",
   "module": "./dist/my-lib.es.js",
