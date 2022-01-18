@@ -1,7 +1,7 @@
-import ElPlusLoading from "reqorm/example/ElPlusLoading";
-import VantToastLoading from "reqorm/example/VantToastLoading";
-import DemoRequest from "reqorm/example/DemoRequest";
-import {setLoadingMap, setRequestMap} from "reqorm";
+import ElPlusLoading from "web-orm/example/ElPlusLoading";
+import VantToastLoading from "web-orm/example/VantToastLoading";
+import DemoRequest from "web-orm/example/DemoRequest";
+import {setLoadingMap, setRequestMap, setLoadingConfig} from "web-orm";
 
 
 const loadingClassMap = {
@@ -17,8 +17,8 @@ const requestClassMap = {
 }
 
 
-
 setLoadingMap(loadingClassMap)
 setRequestMap(requestClassMap)
+// setLoadingConfig({use: true})
 export type loadingClassConfig = typeof loadingClassMap
 export type requestClassConfig = typeof requestClassMap

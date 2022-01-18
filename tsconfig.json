@@ -27,10 +27,10 @@
       "root/*": [
         "*"
       ],
-      "reqorm/*": [
+      "web-orm/*": [
         "*"
       ],
-      "reqorm": [
+      "web-orm": [
         "./lib/main.ts"
       ]
     }

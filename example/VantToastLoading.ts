@@ -1,5 +1,4 @@
-//loading 拆分出来 单独继承体系
-import {BaseLoading} from "reqorm";
+import {BaseLoading} from "web-orm";
 
 import {Toast, ToastOptions} from "vant";
 import {ComponentInstance} from "vant/es/utils";

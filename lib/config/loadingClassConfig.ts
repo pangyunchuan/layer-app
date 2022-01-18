@@ -18,3 +18,13 @@ export default function getLoadingMap(): loadingClassConfig {
 export function setLoadingMap(map: object) {
     loadingMap = map
 }
+
+let loadingConfig = {
+    use: true
+}
+
+export {loadingConfig}
+
+export function setLoadingConfig(config: Partial<typeof loadingConfig>) {
+    loadingConfig = {...loadingConfig, ...config}
+}

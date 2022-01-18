@@ -26,8 +26,13 @@ import { omit, debounce } from "lodash-es";
 class BaseModel {
   constructor() {
     __publicField(this, "_dataType", {});
+    __publicField(this, "isProxyData", false);
   }
   proxyData() {
+    if (this.isProxyData) {
+      return this;
+    }
+    this.isProxyData = true;
     return new Proxy(this, {
       get(target, p) {
         if (p in target) {
@@ -62,10 +67,23 @@ function getRequestMap() {
 function setRequestMap(map) {
   requestMap = map;
 }
+let loadingMap = {};
+function getLoadingMap() {
+  return loadingMap;
+}
+function setLoadingMap(map) {
+  loadingMap = map;
+}
+let loadingConfig = {
+  use: true
+};
+function setLoadingConfig(config) {
+  loadingConfig = __spreadValues(__spreadValues({}, loadingConfig), config);
+}
 class RequestModel extends BaseModel {
   constructor() {
     super(...arguments);
-    __publicField(this, "defaultUseLoading", true);
+    __publicField(this, "useLoading", loadingConfig.use);
   }
   static newReq(reqType = "default") {
     const self = new this();
@@ -77,13 +95,13 @@ class RequestModel extends BaseModel {
     if (!reqClass) {
       throw new Error(`${reqType} \u8BF7\u6C42\u7C7B \u4E0D\u5B58\u5728`);
     }
-    return reqClass.setModel(this).setUseLoading(this.defaultUseLoading);
+    return reqClass.setModel(this).setUseLoading(this.useLoading);
   }
   newFromReq(Model, data, call) {
-    const model = new Model();
+    const model = new Model().proxyData();
     model.data = data;
     call && call(model);
-    return model.proxyData();
+    return model;
   }
 }
 const _BaseRequest = class {
@@ -148,22 +166,15 @@ const _BaseRequest = class {
 };
 let BaseRequest = _BaseRequest;
 __publicField(BaseRequest, "cancelMapByMark", {});
-let loadingMap = {};
-function getLoadingMap() {
-  return loadingMap;
-}
-function setLoadingMap(map) {
-  loadingMap = map;
-}
 class LoadingRequest extends BaseRequest {
   constructor() {
     super(...arguments);
-    __publicField(this, "isDefaultUseLoading", true);
+    __publicField(this, "useLoading", loadingConfig.use);
     __publicField(this, "loading");
     __publicField(this, "model");
   }
-  setUseLoading(use = true) {
-    this.isDefaultUseLoading = use;
+  setUseLoading(use = loadingConfig.use) {
+    this.useLoading = use;
     return this;
   }
   setLoading(options = {}, type = "default") {
@@ -172,7 +183,7 @@ class LoadingRequest extends BaseRequest {
     return this;
   }
   getLoading() {
-    if (!this.loading && this.isDefaultUseLoading) {
+    if (!this.loading && this.useLoading) {
       this.setLoading();
     }
     return this.loading;
@@ -328,4 +339,4 @@ const _BaseLoading = class {
 let BaseLoading = _BaseLoading;
 __publicField(BaseLoading, "defaultConfigByClassName", {});
 __publicField(BaseLoading, "_firstFullInstMapByClassName", {});
-export { BaseLoading, LoadingRequest, RequestModel, setLoadingMap, setRequestMap };
+export { BaseLoading, LoadingRequest, RequestModel, setLoadingConfig, setLoadingMap, setRequestMap };

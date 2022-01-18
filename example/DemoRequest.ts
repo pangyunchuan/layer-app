@@ -1,4 +1,4 @@
-import {LoadingRequest} from "reqorm";
+import {LoadingRequest} from "web-orm";
 import axios from "axios";
 
 

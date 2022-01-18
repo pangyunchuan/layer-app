@@ -1,20 +1,13 @@
-//loading 拆分出来 单独继承体系
-// import BaseLoading from "../Loading/BaseLoading";
-
-import {BaseLoading} from 'reqorm'
+import {BaseLoading} from 'web-orm'
 import {ILoadingInstance, ILoadingOptions} from "element-plus/packages/components/loading/src/loading.type";
 import {ElLoading} from "element-plus";
 
 export default class ElPlusLoading extends BaseLoading<ILoadingOptions, ILoadingInstance> {
     protected getIsFull(): boolean {
-
         if (!this.options.target) {
             return true;
         }
-
-
         const {target} = this.options;
-
         return (target instanceof HTMLElement ? target.nodeName : target) === "body";
     }
 
