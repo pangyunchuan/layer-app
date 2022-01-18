@@ -8,3 +8,8 @@ export declare type loadingOptionsType = {
 };
 export default function getLoadingMap(): loadingClassConfig;
 export declare function setLoadingMap(map: object): void;
+declare let loadingConfig: {
+    use: boolean;
+};
+export { loadingConfig };
+export declare function setLoadingConfig(config: Partial<typeof loadingConfig>): void;

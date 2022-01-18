@@ -12,7 +12,7 @@ export default abstract class BaseModel<ModelData extends object = {}> {
     protected abstract data: ModelData;
 
     //是否已代理数据
-    private isProxyData = false
+    private isProxyData: boolean = false;
 
     //代理 data 数据
     proxyData<MD = ModelData>(): this & MD {

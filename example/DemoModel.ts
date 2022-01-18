@@ -18,30 +18,27 @@ class DemoModel extends RequestModel<IDemo> {
         id: "", name: ""
     };
 
-    relationOne: RelationDataModel & IRelationData | undefined
-
     static find(
         params: Required<Pick<IDemo, "id">>
     ) {
-        const _uri = "/index-service-desk/potal/tools/compositreportaction/";
-        const url = _uri + "getReportDefined.do";
+        const url =  "/tt/234";
         return this.newReq().setLoading().setGet(url, params).reqOne(this);
     }
 
     static findWithOther(
         params: Required<Pick<IDemo, "id">>
     ) {
-        const _uri = "/index-service-desk/potal/tools/compositreportaction/";
-        const url = _uri + "getReportDefined.do";
+        const url = "/demoapi/tt/t1";
         return this.newReq().setLoading().setGet(url, params)
             .reqOneOther<{ mdata: object, test: number }, "mdata", DemoModel>(this, "mdata");
     }
 
     static get() {
-        const _uri = "/index-service-desk/potal/tools/compositreportaction/";
-        const url = _uri + "getReportDefined.do";
+        const url = "/demoapi/tet1/1234";
         return this.newReq().setLoading().setGet(url).reqMany(this);
     }
+
+    relationOne: RelationDataModel & IRelationData | undefined
 
     //初始化
     protected init() {
@@ -55,8 +52,7 @@ class DemoModel extends RequestModel<IDemo> {
     }
 
     static getWithOther() {
-        const _uri = "/index-service-desk/potal/tools/compositreportaction/";
-        const url = _uri + "getReportDefined.do";
+        const url = "/demoapi/test/444";
         return this.newReq().setLoading().setGet(url)
             .reqManyOther<{ mdata: object, ss: string }, "ss", DemoModel>(this, "ss", (model) => {
                 model.init();

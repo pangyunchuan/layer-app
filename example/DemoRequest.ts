@@ -22,11 +22,13 @@ export default class DemoRequest extends LoadingRequest {
         //code 2  必须注册手机号才能访问 等
         if (responseData.code !== 0) {
             //  todo 业务异常处理
+        //    这里异常 使用 抛出  throw
         }
         return response.data.returnContent;
     }
 
     protected errorHandle() {
+        //todo 测试这里异常,正常返回
         if (axios.isAxiosError(this.error)) {
             //http  状态码 错误处理
             this.error.code
