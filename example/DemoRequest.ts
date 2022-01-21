@@ -1,4 +1,4 @@
-import {LoadingRequest} from "web-orm";
+import {LoadingRequest} from "web-api-orm";
 import axios from "axios";
 
 

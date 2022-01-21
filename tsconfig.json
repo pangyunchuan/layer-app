@@ -27,10 +27,10 @@
       "root/*": [
         "*"
       ],
-      "web-orm/*": [
+      "web-api-orm/*": [
         "*"
       ],
-      "web-orm": [
+      "web-api-orm": [
         "./lib/main.ts"
       ]
     }

@@ -1,4 +1,4 @@
-import {RequestModel} from "web-orm";
+import {RequestModel} from "web-api-orm";
 
 interface IDemo {
     id: string;

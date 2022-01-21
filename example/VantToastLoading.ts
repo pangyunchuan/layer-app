@@ -1,4 +1,4 @@
-import {BaseLoading} from "web-orm";
+import {BaseLoading} from "web-api-orm";
 
 import {Toast, ToastOptions} from "vant";
 import {ComponentInstance} from "vant/es/utils";
