@@ -30,6 +30,9 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
     newFromReq<Mo extends RequestModel<ModelData> = RequestModel<any>, MD = Required<Mo["_dataType"]>>(
         Model: new () => Mo, data: any, call?: (inst: Mo & MD) => void
     ): Mo & MD {
+        if (!data) {
+            throw new Error(`模型数据有误:${data}`)
+        }
         const model = <Mo & MD>(new Model()).proxyData();
         model.data = data;
         call && call(model);

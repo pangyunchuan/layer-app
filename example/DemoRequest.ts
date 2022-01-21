@@ -47,9 +47,9 @@ class UserApi extends DemoRequest {
     }
 
     static getList1(){
-        return (new this).setLoading({},'vantToast').setGet('url').request()
+        return (new this).setLoading({},'default').setGet('url').request()
     }
 }
-(new UserApi).setLoading().getList().then(res => {
-})
-UserApi.getList1().then(res=>{})
+// (new UserApi).setLoading().getList().then(res => {
+// })
+// UserApi.getList1().then(res=>{})

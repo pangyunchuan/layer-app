@@ -1,6 +1,6 @@
 {
   "name": "web-api-orm",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "一个基于ts,axios的web端orm",
   "keywords": ["orm","xhr","promise","ajax"],
   "files": [

@@ -14,7 +14,8 @@ interface IRelationData {
     name: string,
 }
 
-
+// 通过 reqOne reqMany等方法 得到模型会代理 data
+//手动实例的模型,需要自己代理,,   (new DemoModel).id 无法访问,  (new DemoModel).proxyData().id 可以访问
 class DemoModel extends RequestModel<IDemo> {
     //模型数据   data 中的数据,可通过 模型直接访问
     // 也是 (new DemoModel()).id; 结果为 id
@@ -97,16 +98,16 @@ class RelationDataModel extends RequestModel<IRelationData> {
     }
 }
 
-DemoModel.find(
-    '11'
-).then(res => {
-
-});
-DemoModel.findWithOther(
-    {id: "1123"}
-).then(res => {
-
-});
-DemoModel.get().then(res => {
-
-});
+// DemoModel.find(
+//     '11'
+// ).then(res => {
+//
+// });
+// DemoModel.findWithOther(
+//     {id: "1123"}
+// ).then(res => {
+//
+// });
+// DemoModel.get().then(res => {
+//
+// });

@@ -98,6 +98,9 @@ class RequestModel extends BaseModel {
     return reqClass.setModel(this).setUseLoading(this.useLoading);
   }
   newFromReq(Model, data, call) {
+    if (!data) {
+      throw new Error(`\u6A21\u578B\u6570\u636E\u6709\u8BEF:${data}`);
+    }
     const model = new Model().proxyData();
     model.data = data;
     call && call(model);
