@@ -11,8 +11,6 @@ export default abstract class LoadingRequest extends BaseRequest {
     setModel<ReqM extends RequestModel<{}> = RequestModel<{}>>(model: ReqM): this;
     getModel<ReqM extends RequestModel<{}> = RequestModel<{}>>(): ReqM;
     request<ResData = any>(config?: IRequestConfig): Promise<ResData>;
-    setGet(url: string, params?: object, config?: Partial<IRequestConfig>): this
-    setPost(url: string, data?: any, params?: object, config?: Partial<IRequestConfig>): this
     /**
      * 请求并返回单个模型
      * @param Model
