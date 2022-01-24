@@ -3,7 +3,7 @@ import VantToastLoading from "web-api-orm/example/VantToastLoading";
 import DemoRequest from "web-api-orm/example/DemoRequest";
 import {setLoadingMap, setRequestMap, setLoadingConfig} from "web-api-orm";
 //demoModel 仅供参考,不应再  ModelConfig中调用.
-// import DemoModel from "root/types/lib/Models/DemoModel";
+// import DemoModel from "web-api-orm/example/DemoModel";
 
 // 加载默认配置设置
 (new ElPlusLoading).setDefaultConfig({
@@ -18,6 +18,7 @@ import {setLoadingMap, setRequestMap, setLoadingConfig} from "web-api-orm";
     message: '加载中'
 })
 
+
 /**
  * 加载类配置，在请求类中被使用时，传入键名确定加载类，具体使用后续介绍
  * 请注意 这两种ui加载效果，使用前需要安装ui库
@@ -30,7 +31,8 @@ const loadingClassMap = {
 setLoadingMap(loadingClassMap)
 
 //配置默认情况是否使用加载功能
-// setLoadingConfig({use: true})
+setLoadingConfig({use: true})
+
 
 /**
  * 请求类配置，在模型类中被使用时，传入键名确定请求类
@@ -41,6 +43,7 @@ const requestClassMap = {
 }
 setRequestMap(requestClassMap)
 
-//类型提示用
+
+//用于ts类型提示,使用ts时,必备。
 export type loadingClassConfig = typeof loadingClassMap
 export type requestClassConfig = typeof requestClassMap

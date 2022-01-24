@@ -47,6 +47,8 @@ npm install web-api-orm
 2-1. 项目根目录下执行命令 node .\node_modules\.bin\orminit.cmd
 2-2. package.json 中 scripts 增加  {"orminit":"orminit"}  之后执行 npm run orminit
 2-3. 手动复制 node_modules/web-api-orm/ 下的 modelConfig 目录  到项目根目录(连同目录一起复制)
+
+3. 在项目使用 web-api-orm 前引入 modelConfig 如在 main.ts 中 import "root/modelConfig";
 ```
 
 ## 功能介绍与前期准备

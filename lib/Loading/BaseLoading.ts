@@ -17,7 +17,9 @@ export default abstract class BaseLoading<Options extends {}, InstType> {
   //全屏Loading单例
   private fullLoadingSingleInst: InstType | undefined;
 
-  private isFull = false;
+  private get isFull(){
+    return this.getIsFull()
+  }
   protected loadingInst: InstType | undefined;
 
   private get classname():string {
@@ -38,7 +40,6 @@ export default abstract class BaseLoading<Options extends {}, InstType> {
   constructor(inputConfig: Options = <Options>{}) {
     const defaultConfig = BaseLoading.defaultConfigByClassName[this.classname] || {};
     this.options = { ...this.options, ...defaultConfig, ...inputConfig };
-    this.isFull = this.getIsFull();
     return this;
   }
 
