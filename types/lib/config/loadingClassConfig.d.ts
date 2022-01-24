@@ -1,13 +1,13 @@
-import { loadingClassConfig } from "root/modelConfig";
+import { loadingClassMapType } from "root/modelConfig";
 import BaseLoading from "../Loading/BaseLoading";
-export declare type loadingKeys = keyof loadingClassConfig;
+export declare type loadingKeys = keyof loadingClassMapType;
 export declare type getLoadingInstanceByKey = {
-    [K in loadingKeys]: InstanceType<loadingClassConfig[K]>;
+    [K in loadingKeys]: InstanceType<loadingClassMapType[K]>;
 };
 export declare type loadingOptionsType = {
     [K in loadingKeys]: getLoadingInstanceByKey[K]["_options"];
 };
-export default function getLoadingMap(): loadingClassConfig;
+export default function getLoadingMap(): loadingClassMapType;
 export declare function setLoadingMap(map: {
     [key: string]: new () => BaseLoading<any, any>;
 }): void;

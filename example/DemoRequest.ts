@@ -1,5 +1,5 @@
 import {LoadingRequest} from "web-api-orm";
-import axios from "axios";
+import axios, {Cancel} from "axios";
 
 
 export default class DemoRequest extends LoadingRequest {
@@ -16,6 +16,7 @@ export default class DemoRequest extends LoadingRequest {
     protected responseHandle() {
         const {response} = this;
         if (!response) {
+            // 不符合要求,抛出异常
             throw response;
         }
         const responseData = response.data;
@@ -30,10 +31,17 @@ export default class DemoRequest extends LoadingRequest {
     }
 
     protected errorHandle() {
-        //todo 测试这里异常,正常返回
+        let errorTip = "未知错误";
         if (axios.isAxiosError(this.error)) {
-            //http  状态码 错误处理
-            this.error.code
+            const response = this.error.response;
+            if (response) {
+                if (response.status = 404) {
+                    // 发起提示, 如 element.message
+                    // 网络请求不存在
+                }
+            }
+        } else if (axios.isCancel(this.error)) {
+            console.log("取消请求：", (<Cancel>this.error).message);
         }
 
         //抛出异常
@@ -48,10 +56,11 @@ class UserApi extends DemoRequest {
         return this.setGet('url', {}).request()
     }
 
-    static getList1(){
-        return (new this).setLoading({},'default').setGet('url').request()
+    static getList1() {
+        return (new this).setLoading({}, 'default').setGet('url').request()
     }
 }
+
 // (new UserApi).setLoading().getList().then(res => {
 // })
 // UserApi.getList1().then(res=>{})
