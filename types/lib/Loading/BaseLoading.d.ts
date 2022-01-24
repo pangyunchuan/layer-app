@@ -9,7 +9,7 @@ export default abstract class BaseLoading<Options extends {}, InstType> {
     private reqIngNum;
     private reqCount;
     private fullLoadingSingleInst;
-    private isFull;
+    private get isFull();
     protected loadingInst: InstType | undefined;
     private get classname();
     protected static defaultConfigByClassName: {
