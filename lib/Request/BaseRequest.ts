@@ -45,7 +45,7 @@ export default abstract class BaseRequest<Config extends IRequestConfig = IReque
 
   protected abstract errorHandle(): any
 
-  request<ResData = any>(config: Partial<Config> = {}): Promise<ResData> {
+  async request<ResData = any>(config: Partial<Config> = {}): Promise<ResData> {
     this.config = { ...this.config, ...config };
 
     this.requestHandle();

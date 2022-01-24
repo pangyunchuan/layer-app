@@ -9,7 +9,6 @@ import {omit} from "lodash-es";
 
 
 export default abstract class LoadingRequest extends BaseRequest {
-    //todo 配置文件
     //是否默认使用loading
     protected useLoading = loadingConfig.use;
 
@@ -55,8 +54,7 @@ export default abstract class LoadingRequest extends BaseRequest {
 
 
     //请求
-
-    request<ResData = any>(config: IRequestConfig = {}): Promise<ResData> {
+    async request<ResData = any>(config: IRequestConfig = {}): Promise<ResData> {
         let loading = this.getLoading();
         loading?.startLoading();
         return super.request(config).then((r) => {

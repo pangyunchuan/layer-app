@@ -36,7 +36,9 @@ export default class DemoRequest extends LoadingRequest {
             this.error.code
         }
 
-        return this.error;
+        //抛出异常
+        throw this.error
+        // return this.error;
     }
 }
 

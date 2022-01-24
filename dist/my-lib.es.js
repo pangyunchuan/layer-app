@@ -132,7 +132,7 @@ const _BaseRequest = class {
     map[mark].cancel();
     delete map[mark];
   }
-  request(config = {}) {
+  async request(config = {}) {
     this.config = __spreadValues(__spreadValues({}, this.config), config);
     this.requestHandle();
     this.setCancel();
@@ -201,7 +201,7 @@ class LoadingRequest extends BaseRequest {
     }
     return this.model;
   }
-  request(config = {}) {
+  async request(config = {}) {
     let loading = this.getLoading();
     loading == null ? void 0 : loading.startLoading();
     return super.request(config).then((r) => {
@@ -250,7 +250,6 @@ const _BaseLoading = class {
     __publicField(this, "reqIngNum", 0);
     __publicField(this, "reqCount", 0);
     __publicField(this, "fullLoadingSingleInst");
-    __publicField(this, "isFull", false);
     __publicField(this, "loadingInst");
     __publicField(this, "_options", {});
     __publicField(this, "options", {});
@@ -258,8 +257,10 @@ const _BaseLoading = class {
     __publicField(this, "_waitClose");
     const defaultConfig = _BaseLoading.defaultConfigByClassName[this.classname] || {};
     this.options = __spreadValues(__spreadValues(__spreadValues({}, this.options), defaultConfig), inputConfig);
-    this.isFull = this.getIsFull();
     return this;
+  }
+  get isFull() {
+    return this.getIsFull();
   }
   get classname() {
     return this.constructor.name;

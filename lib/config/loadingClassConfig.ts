@@ -1,9 +1,10 @@
-import {loadingClassConfig} from "root/modelConfig";
+import {loadingClassMapType} from "root/modelConfig";
+import BaseLoading from "../Loading/BaseLoading";
 
-export type loadingKeys = keyof loadingClassConfig
+export type loadingKeys = keyof loadingClassMapType
 
 export type getLoadingInstanceByKey = {
-    [K in loadingKeys]: InstanceType<loadingClassConfig[K]>
+    [K in loadingKeys]: InstanceType<loadingClassMapType[K]>
 }
 
 export type loadingOptionsType = {
@@ -11,11 +12,11 @@ export type loadingOptionsType = {
 }
 
 let loadingMap: any = {}
-export default function getLoadingMap(): loadingClassConfig {
+export default function getLoadingMap(): loadingClassMapType {
     return loadingMap;
 }
 
-export function setLoadingMap(map: object) {
+export function setLoadingMap(map: { [key: string]: new () => BaseLoading<any, any> }) {
     loadingMap = map
 }
 

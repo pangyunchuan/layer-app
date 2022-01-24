@@ -45,5 +45,5 @@ setRequestMap(requestClassMap)
 
 
 //用于ts类型提示,使用ts时,必备。
-export type loadingClassConfig = typeof loadingClassMap
-export type requestClassConfig = typeof requestClassMap
+export type loadingClassMapType = typeof loadingClassMap
+export type requestClassMapType = typeof requestClassMap
