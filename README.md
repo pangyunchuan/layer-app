@@ -163,7 +163,7 @@ class DemoModel extends RequestModel<IDemo> {
     get modelAttr(){
         return 'demoModel'
     }
-    static find(id:string) {
+    static async find(id:string) {
         const url =  "/tt/234";
         return this.newReq().setLoading().setGet(url, {id}).reqOne(this);
     }
@@ -176,11 +176,11 @@ demoModel.id;demoModel.name;
 如 demoModel.modelAttr 的值 为  'demoModel' 而不是 'data'
 
 请求数据并获取模型
-静态方法find 中 展示了如何 请求数据获取模型。
+静态异步方法find 中 展示了如何 请求数据获取模型。
 newReq  静态方法newReq 会实例一个 请求类,接收参数为 请求中提到的,请求类键名。
 其中 reqOne 方法 请求 中已经说明过。
 
-建议在模型 静态方法中完成接口请求，实例方法中,扩展模型内容。
+建议在模型 静态异步方法中完成接口请求，实例方法中,扩展模型内容。
 
 更多细节，参考 modelConfig 和 web-api-orm/example 中的内容
 ```

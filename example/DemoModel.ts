@@ -45,10 +45,10 @@ export default class DemoModel extends RequestModel<IDemo> {
 
 
     //单个模型请求
-    // 建议在模型 静态方法中完成接口请求
+    // 建议在模型 静态异步方法中完成接口请求
     // 实例方法中,扩展模型内容。
     //结果为 demoModel
-    static find(id: string) {
+    static async find(id: string) {
         const url = "/tt/234";
         //reqOne 参数说明
         // Model 模型类(未实例),类似接口第一个参数都是这
@@ -61,7 +61,7 @@ export default class DemoModel extends RequestModel<IDemo> {
 
 
     // 结果 为  { test:number,model:demoModel  }
-    static findWithOther(
+    static async findWithOther(
         params: Required<Pick<IDemo, "id">>
     ) {
         const url = "/demoapi/tt/t1";
@@ -74,7 +74,7 @@ export default class DemoModel extends RequestModel<IDemo> {
     }
 
     // 结果 为  demoModel[]  模型数组
-    static get() {
+    static async get() {
         const url = "/demoapi/tet1/1234";
         //reqMany 与 reqOne 参数一致
         return this.newReq().setLoading().setGet(url).reqMany(this);
@@ -82,7 +82,7 @@ export default class DemoModel extends RequestModel<IDemo> {
 
 
     // 结果 为  { ss:string,models:demoModel[]  }
-    static getWithOther() {
+    static async getWithOther() {
         const url = "/demoapi/test/444";
         //reqManyOther 与 reqOneOther 参数一致
         return this.newReq().setLoading().setGet(url)
