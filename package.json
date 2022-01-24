@@ -1,6 +1,6 @@
 {
   "name": "web-api-orm",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "author": "pangyunchuan",
   "license": "MIT",
   "main": "./dist/my-lib.umd.js",
