@@ -57,10 +57,12 @@ npm install web-api-orm
  * 项目内容如下
  */
 import {BaseLoading, RequestModel, LoadingRequest, setLoadingMap, setLoadingConfig, setRequestMap} from "web-api-orm";
+
+
 /**
  后续将分为  加载类  BaseLoading  ,请求类 LoadingRequest, 模型 RequestModel 三个部分介绍。
  setLoadingMap,setLoadingConfig,setRequestMap为配置项，在modelConfig/index.ts中被使用
- 初始内容如下，使用时根据项目实际情况修改配置。
+ 其初始内容如下，使用时根据项目实际情况修改配置。
  */
 
 /**
@@ -176,8 +178,7 @@ demoModel.id;demoModel.name;
 newReq  静态方法newReq 会实例一个 请求类,接收参数为 请求中提到的,请求类键名。
 其中 reqOne 方法 请求 中已经说明过。
 
-建议在模型 静态方法中完成接口请求
-实例方法中,扩展模型内容。
+建议在模型 静态方法中完成接口请求，实例方法中,扩展模型内容。
 
-更多细节，参考 modelConfig中 的
+更多细节，参考 modelConfig 和 web-api-orm/example 中的内容
 ```
