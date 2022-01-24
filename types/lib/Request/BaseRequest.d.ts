@@ -17,6 +17,4 @@ export default abstract class BaseRequest<Config extends IRequestConfig = IReque
     request<ResData = any>(config?: Partial<Config>): Promise<ResData>;
     setGet(url: string, params?: object, config?: Partial<Config>): this;
     setPost(url: string, data?: any, params?: object, config?: Partial<Config>): this;
-    get<T = any>(url: string, params?: object, config?: Partial<Config>): Promise<T>;
-    post<T = any>(url: string, data?: object, params?: object, config?: Partial<Config>): Promise<T>;
 }

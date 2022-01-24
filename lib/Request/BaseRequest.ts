@@ -83,23 +83,4 @@ export default abstract class BaseRequest<Config extends IRequestConfig = IReque
     this.config = { ...this.config, url, data, params, ...config };
     return this
   }
-
-
-  get<T = any>(url: string, params: object = {}, config: Partial<Config> = {}) {
-    return this.request<T>({
-      method: "get",
-      url: url,
-      params,
-      ...config
-    });
-  }
-
-  post<T = any>(url: string, data: object = {}, params: object = {}, config: Partial<Config> = {}) {
-    return this.request<T>({
-      method: "post",
-      url: url,
-      data,
-      ...config
-    });
-  }
 }
