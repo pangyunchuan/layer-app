@@ -1,6 +1,15 @@
 {
   "name": "web-api-orm",
-  "version": "1.0.5",
+  "version": "1.0.7",
+  "author": "pangyunchuan",
+  "license": "MIT",
+  "main": "./dist/my-lib.umd.js",
+  "module": "./dist/my-lib.es.js",
+  "types": "types/lib/main.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pangyunchuan/web-api-orm"
+  },
   "description": "一个基于ts,axios的web端orm",
   "keywords": ["orm","xhr","promise","ajax"],
   "files": [
@@ -12,20 +21,6 @@
   ],
   "bin": {
     "orminit": "bin/init.js"
-  },
-  "main": "./dist/my-lib.umd.js",
-  "module": "./dist/my-lib.es.js",
-  "types": "types/lib/main.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/my-lib.es.js",
-      "require": "./dist/my-lib.umd.js"
-    },
-    "./example/*": "./example/*"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/pangyunchuan/web-api-orm"
   },
   "scripts": {
     "dev": "vite",
@@ -54,5 +49,12 @@
     "vue": "^3.2.26",
     "vue-router": "^4.0.11",
     "vue-tsc": "^0.29.8"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/my-lib.es.js",
+      "require": "./dist/my-lib.umd.js"
+    },
+    "./example/*": "./example/*"
   }
 }
