@@ -11,7 +11,15 @@
     "url": "git+https://github.com/pangyunchuan/web-api-orm"
   },
   "description": "一个基于ts,axios的web端orm",
-  "keywords": ["web","api","orm","xhr","promise","ajax","laravel"],
+  "keywords": [
+    "web",
+    "api",
+    "orm",
+    "xhr",
+    "promise",
+    "ajax",
+    "laravel"
+  ],
   "files": [
     "bin",
     "dist",
@@ -30,17 +38,10 @@
   "peerDependencies": {
     "axios": "^0",
     "lodash-es": "^4.17",
-    "@types/lodash-es": "^4.17.5",
     "element-plus": "^1.1.0-beta.19",
     "vant": "^3.2.3"
   },
   "peerDependenciesMeta": {
-    "axios": {
-      "optional": false
-    },
-    "@types/lodash-es": {
-      "optional": true
-    },
     "element-plus": {
       "optional": true
     },
