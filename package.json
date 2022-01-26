@@ -11,7 +11,7 @@
     "url": "git+https://github.com/pangyunchuan/web-api-orm"
   },
   "description": "一个基于ts,axios的web端orm",
-  "keywords": ["orm","xhr","promise","ajax"],
+  "keywords": ["web","api","orm","xhr","promise","ajax","laravel"],
   "files": [
     "bin",
     "dist",
@@ -27,23 +27,24 @@
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview"
   },
-  "dependencies": {
+  "peerDependencies": {
     "axios": "^0.24.0",
     "lodash-es": "^4.17.21"
+  },
+  "optionalDependencies": {
+    "@types/lodash-es": "^4.17.5",
+    "element-plus": "^1.1.0-beta.19",
+    "vant": "^3.2.3"
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.5",
     "@types/mockjs": "^1.0.4",
     "@types/node": "^16.11.11",
     "@vitejs/plugin-vue": "^2.0.0",
-    "dtsmake": "^0.0.10",
-    "element-plus": "^1.1.0-beta.19",
-    "install": "^0.13.0",
     "reset-css": "^5.0.1",
     "sass": "^1.44.0",
     "typescript": "^4.5.2",
     "unplugin-vue-components": "^0.17.2",
-    "vant": "^3.2.3",
     "vite": "^2.7.2",
     "vite-plugin-compression": "^0.3.6",
     "vue": "^3.2.26",
