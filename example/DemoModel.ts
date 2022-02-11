@@ -1,8 +1,9 @@
-import {RequestModel} from "web-api-orm";
+import {RequestModel} from "layer-app";
 
 interface IDemo {
     id: string;
     name: string;
+    demoField: string,
     modelAttr: string;
     relationData?: IRelationData
 }
@@ -20,7 +21,7 @@ export default class DemoModel extends RequestModel<IDemo> {
     //模型数据   data 中的数据,可通过 模型直接访问
     // 也是 (new DemoModel()).id; 结果为 id
     protected data: IDemo = {
-        id: "id", name: "", modelAttr: 'data'
+        id: "id", name: "", demoField: '11', modelAttr: 'data'
     };
 
     get modelAttr() {
@@ -36,7 +37,7 @@ export default class DemoModel extends RequestModel<IDemo> {
     protected init() {
         const relationData = this.data.relationData
         if (relationData) {
-            this.relationOne = (new RelationDataModel).newFromReq(RelationDataModel, relationData, (model) => {
+            this.relationOne = new RelationDataModel().newFromReq(relationData, (model) => {
                 // model.demoId
             })
             // this.relationOne.demoId
@@ -49,14 +50,38 @@ export default class DemoModel extends RequestModel<IDemo> {
     // 实例方法中,扩展模型内容。
     //结果为 demoModel
     static async find(id: string) {
+        // this.create()
         const url = "/tt/234";
         //reqOne 参数说明
         // Model 模型类(未实例),类似接口第一个参数都是这
         // call 回调函数,参数都是 模型实例,可用户完成一些模型实例的后置操作,所有类似操作都有这个参数
-        return this.newReq().setLoading().setGet(url, {id}).reqOne(
-            this, (demoModel) => {
-                demoModel.init()
-            });
+        return this.setReq(this.newReq().setLoading().setGet('')).reqOne().then(rr => {
+            rr.test()
+        })
+        // return this.newReq().setLoading().setGet(url, {id}).reqOne(
+        //     this, (demoModel) => {
+        //         demoModel.init()
+        //     });
+    }
+
+    static async test() {
+        // this.setReq(this.newReq().setLoading().setGet('')).reqOne().then(rr=>{rr.demoField})
+        this.setReq(this.newReq()).reqOne().then(re => {
+
+        })
+        return this.setReq(this.newReq()).reqOne()
+    }
+
+    async test() {
+        return DemoModel.setReq(this.newReq()).reqOneOther<{ tt: any, tt1: string }, 'tt'>
+        ('tt', (inst) => {
+            inst.test()
+        })
+        // return this.setReq(this.newReq()).reqOne((inst) => {
+        //     inst.init()
+        // })/*.then(rr => {
+        //     rr.test()
+        // })*/
     }
 
 
@@ -69,15 +94,24 @@ export default class DemoModel extends RequestModel<IDemo> {
         // Model  介绍已有
         // dataKey 模型数据所在key ,比如这里的 mdata  为模型数据的键名,这种情况必须指明
         // call 介绍有
-        return this.newReq().setLoading().setGet(url, params)
-            .reqOneOther<{ mdata: object, test: number }, "mdata", DemoModel>(this, "mdata");
+        return this.setReq(this.newReq().setLoading().setGet(url, params))
+            .reqOneOther<{ mdata: object, test: number }, "mdata">('mdata')
+        // this.newReq().setLoading().setGet(url, params)
+        //     .reqOneOther<{ mdata: object, test: number }, "mdata", DemoModel>(this, "mdata");
     }
 
     // 结果 为  demoModel[]  模型数组
     static async get() {
         const url = "/demoapi/tet1/1234";
         //reqMany 与 reqOne 参数一致
-        return this.newReq().setLoading().setGet(url).reqMany(this);
+        return this.setReq(this.newReq().setLoading().setGet(url)).reqMany()
+        // return this.newReq().setLoading().setGet(url).reqMany(this);
+    }
+
+    ttttt() {
+        const url = "/demoapi/test/444";
+        return DemoModel.setReq(this.newReq().setLoading().setGet(url))
+            .reqManyOther<{ mdata: object, ss: string }, "mdata">('mdata')
     }
 
 
@@ -85,11 +119,22 @@ export default class DemoModel extends RequestModel<IDemo> {
     static async getWithOther() {
         const url = "/demoapi/test/444";
         //reqManyOther 与 reqOneOther 参数一致
-        return this.newReq().setLoading().setGet(url)
-            .reqManyOther<{ mdata: object, ss: string }, "mdata", DemoModel>(
-                this, "mdata");
+        return this.setReq(this.newReq().setLoading().setGet(url))
+            .reqManyOther<{ mdata: object, ss: string }, "mdata">('mdata')
+        // return this.newReq().setLoading().setGet(url)
+        //     .reqManyOther<{ mdata: object, ss: string }, "mdata", DemoModel>(
+        //         this, "mdata");
     }
 }
+DemoModel.test().then(rr => {
+    rr.test()
+})
+new DemoModel().test().then(re => {
+    re.model.test()
+})
+DemoModel.getWithOther().then(r => {
+    r.models[0].test()
+})
 
 //关系模型,不会从接口获取数据
 class RelationDataModel extends RequestModel<IRelationData> {
@@ -97,17 +142,3 @@ class RelationDataModel extends RequestModel<IRelationData> {
         demoId: '', id: '', name: ''
     }
 }
-
-// DemoModel.find(
-//     '11'
-// ).then(res => {
-//
-// });
-// DemoModel.findWithOther(
-//     {id: "1123"}
-// ).then(res => {
-//
-// });
-// DemoModel.get().then(res => {
-//
-// });

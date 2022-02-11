@@ -1,4 +1,4 @@
-import {BaseLoading} from 'web-api-orm'
+import {BaseLoading} from 'layer-app'
 import {ILoadingInstance, ILoadingOptions} from "element-plus/packages/components/loading/src/loading.type";
 import {ElLoading} from "element-plus";
 

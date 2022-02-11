@@ -20,10 +20,9 @@
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
       "root/*": ["*"],
-      "web-api-orm/*": ["*"],
-      "web-api-orm": ["./lib/main.ts"]
+      "layer-app/*": ["*"],
+      "layer-app": ["./lib/main.ts"]
     }
   },
   "include": [

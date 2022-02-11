@@ -21,11 +21,11 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import axios from "axios";
 import { omit, debounce } from "lodash-es";
+import axios from "axios";
+import { ref, onBeforeUnmount } from "vue";
 class BaseModel {
   constructor() {
-    __publicField(this, "_dataType", {});
     __publicField(this, "isProxyData", false);
   }
   proxyData() {
@@ -52,6 +52,7 @@ class BaseModel {
           target.data[p] = value;
           return true;
         }
+        target[p] = value;
         return true;
       },
       has(target, p) {
@@ -84,24 +85,68 @@ class RequestModel extends BaseModel {
   constructor() {
     super(...arguments);
     __publicField(this, "useLoading", loadingConfig.use);
+    __publicField(this, "_req");
   }
   static newReq(reqType = "default") {
-    const self = new this();
-    return self.newReq(reqType);
-  }
-  newReq(reqType = "default") {
     const reqMap = getRequestMap();
     const reqClass = new reqMap[reqType]();
     if (!reqClass) {
       throw new Error(`${reqType} \u8BF7\u6C42\u7C7B \u4E0D\u5B58\u5728`);
     }
-    return reqClass.setModel(this).setUseLoading(this.useLoading);
+    return reqClass;
   }
-  newFromReq(Model, data, call) {
+  newReq(reqType = "default") {
+    return RequestModel.newReq(reqType);
+  }
+  get req() {
+    if (!this._req) {
+      throw new Error(` \u8BF7\u6C42\u7C7B \u672A\u8BBE\u7F6E`);
+    }
+    return this._req;
+  }
+  static setReq(req) {
+    return new this().setReq(req);
+  }
+  setReq(req) {
+    this._req = req.setUseLoading(this.useLoading);
+    return this;
+  }
+  async reqOne(call) {
+    return this.req.request().then((res) => {
+      return this.newFromReq(res, call);
+    });
+  }
+  async reqOneOther(dataKey, call) {
+    return this.req.request().then((res) => {
+      const data = res[dataKey];
+      const model = this.newFromReq(data, call);
+      return __spreadValues({ model }, omit(res, dataKey));
+    });
+  }
+  async reqMany(call) {
+    return this.req.request().then((res) => {
+      let models = [];
+      for (const da of res) {
+        models.push(this.newFromReq(res, call));
+      }
+      return models;
+    });
+  }
+  async reqManyOther(dataKey, call) {
+    return this.req.request().then((res) => {
+      const dataList = res[dataKey];
+      let models = [];
+      for (const data of dataList) {
+        models.push(this.newFromReq(data, call));
+      }
+      return __spreadValues({ models }, omit(res, dataKey));
+    });
+  }
+  newFromReq(data, call) {
     if (!data) {
       throw new Error(`\u6A21\u578B\u6570\u636E\u6709\u8BEF:${data}`);
     }
-    const model = new Model().proxyData();
+    const model = new this.constructor(data).proxyData();
     model.data = data;
     call && call(model);
     return model;
@@ -152,20 +197,6 @@ const _BaseRequest = class {
     this.config = __spreadValues(__spreadProps(__spreadValues({}, this.config), { url, data, params }), config);
     return this;
   }
-  get(url, params = {}, config = {}) {
-    return this.request(__spreadValues({
-      method: "get",
-      url,
-      params
-    }, config));
-  }
-  post(url, data = {}, params = {}, config = {}) {
-    return this.request(__spreadValues({
-      method: "post",
-      url,
-      data
-    }, config));
-  }
 };
 let BaseRequest = _BaseRequest;
 __publicField(BaseRequest, "cancelMapByMark", {});
@@ -174,7 +205,6 @@ class LoadingRequest extends BaseRequest {
     super(...arguments);
     __publicField(this, "useLoading", loadingConfig.use);
     __publicField(this, "loading");
-    __publicField(this, "model");
   }
   setUseLoading(use = loadingConfig.use) {
     this.useLoading = use;
@@ -191,16 +221,6 @@ class LoadingRequest extends BaseRequest {
     }
     return this.loading;
   }
-  setModel(model) {
-    this.model = model;
-    return this;
-  }
-  getModel() {
-    if (!this.model) {
-      throw new Error("\u8BF7\u5148\u8BBE\u7F6E\u6A21\u578B");
-    }
-    return this.model;
-  }
   async request(config = {}) {
     let loading = this.getLoading();
     loading == null ? void 0 : loading.startLoading();
@@ -210,37 +230,6 @@ class LoadingRequest extends BaseRequest {
     }).catch((er) => {
       loading == null ? void 0 : loading.endLoading();
       throw er;
-    });
-  }
-  reqOne(Model, call) {
-    return this.request().then((res) => {
-      return this.getModel().newFromReq(Model, res, call);
-    });
-  }
-  reqOneOther(Model, dataKey, call) {
-    return this.request().then((res) => {
-      const data = res[dataKey];
-      const model = this.getModel().newFromReq(Model, data, call);
-      return __spreadProps(__spreadValues({}, omit(res, dataKey)), { model });
-    });
-  }
-  reqMany(Model, call) {
-    return this.request().then((res) => {
-      let models = [];
-      for (const da of res) {
-        models.push(this.getModel().newFromReq(Model, da, call));
-      }
-      return models;
-    });
-  }
-  reqManyOther(Model, dataKey, call) {
-    return this.request().then((res) => {
-      const data = res[dataKey];
-      const models = [];
-      for (const da of data) {
-        models.push(this.getModel().newFromReq(Model, da, call));
-      }
-      return __spreadProps(__spreadValues({}, omit(res, dataKey)), { models });
     });
   }
 }
@@ -343,4 +332,37 @@ const _BaseLoading = class {
 let BaseLoading = _BaseLoading;
 __publicField(BaseLoading, "defaultConfigByClassName", {});
 __publicField(BaseLoading, "_firstFullInstMapByClassName", {});
-export { BaseLoading, LoadingRequest, RequestModel, setLoadingConfig, setLoadingMap, setRequestMap };
+const _VmVue3 = class {
+  constructor() {
+    __publicField(this, "key", "default");
+    __publicField(this, "isDestroy", false);
+  }
+  static create(key = "default", destroy = true) {
+    var _a, _b;
+    _VmVue3.map[this.name] = (_a = _VmVue3.map[this.name]) != null ? _a : {};
+    _VmVue3.map[this.name][key] = (_b = _VmVue3.map[this.name][key]) != null ? _b : ref(new this());
+    const vm = _VmVue3.map[this.name][key].value;
+    vm.key = key;
+    vm.setDestroy(key, destroy);
+    return _VmVue3.map[this.name][key];
+  }
+  reset() {
+    const newVm = new this.constructor();
+    newVm.key = this.key;
+    newVm.isDestroy = this.isDestroy;
+    _VmVue3.map[this.constructor.name][this.key].value = newVm;
+  }
+  setDestroy(key, destroy) {
+    if (this.isDestroy || !destroy) {
+      return;
+    }
+    this.isDestroy = true;
+    const classname = this.constructor.name;
+    onBeforeUnmount(() => {
+      delete _VmVue3.map[classname][key];
+    });
+  }
+};
+let VmVue3 = _VmVue3;
+__publicField(VmVue3, "map", {});
+export { BaseLoading, LoadingRequest, RequestModel, VmVue3, setLoadingConfig, setLoadingMap, setRequestMap };

@@ -1,9 +1,9 @@
-import ElPlusLoading from "web-api-orm/example/ElPlusLoading";
-import VantToastLoading from "web-api-orm/example/VantToastLoading";
-import DemoRequest from "web-api-orm/example/DemoRequest";
-import {setLoadingMap, setRequestMap, setLoadingConfig} from "web-api-orm";
+import ElPlusLoading from "layer-app/example/ElPlusLoading";
+import VantToastLoading from "layer-app/example/VantToastLoading";
+import DemoRequest from "layer-app/example/DemoRequest";
+import {setLoadingMap, setRequestMap, setLoadingConfig} from "layer-app";
 //demoModel 仅供参考,不应再  ModelConfig中调用.
-// import DemoModel from "web-api-orm/example/DemoModel";
+// import DemoModel from "layer-app/example/DemoModel";
 
 // 加载默认配置设置
 (new ElPlusLoading).setDefaultConfig({

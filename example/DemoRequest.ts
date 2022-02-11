@@ -1,4 +1,4 @@
-import {LoadingRequest} from "web-api-orm";
+import {LoadingRequest} from "layer-app";
 import axios, {Cancel} from "axios";
 
 

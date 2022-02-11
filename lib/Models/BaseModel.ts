@@ -8,7 +8,6 @@
 
 
 export default abstract class BaseModel<ModelData extends object = {}> {
-    _dataType: Partial<ModelData> = {}; //仅用于动态类型获取
     protected abstract data: ModelData;
 
     //是否已代理数据
@@ -39,8 +38,10 @@ export default abstract class BaseModel<ModelData extends object = {}> {
                     target.data[p] = value;
                     return true;
                 }
-                // throw new Error('不存在的属性')
+                target[p] = value;
                 return true;
+                // throw new Error('不存在的属性')
+                // return true;
             },
             has(target: any, p: string | symbol) {
                 return (p in target) || (target.data && p in target.data);
