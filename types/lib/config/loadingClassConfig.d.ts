@@ -1,4 +1,4 @@
-import { loadingClassMapType } from "root/modelConfig";
+import { loadingClassMapType } from "root/layerAppStart";
 import BaseLoading from "../Loading/BaseLoading";
 export declare type loadingKeys = keyof loadingClassMapType;
 export declare type getLoadingInstanceByKey = {

@@ -43,19 +43,19 @@ npm install layer-app
     }
   }
 }
-2. 项目增加模型配置文件,项目根目录增加  modelConfig/index.ts  可通过如下方式初始化配置文件
-2-1. 项目根目录下执行命令 node .\node_modules\.bin\orminit.cmd
-2-2. package.json 中 scripts 增加  {"orminit":"orminit"}  之后执行 npm run orminit
-2-3. 手动复制 node_modules/layer-app/ 下的 modelConfig 目录  到项目根目录(连同目录一起复制)
+2. 项目增加模型配置文件,项目根目录增加  layerAppStart/index.ts  可通过如下方式初始化配置文件
+2-1. 项目根目录下执行命令 node .\node_modules\.bin\createLayerAppStart.cmd
+2-2. package.json 中 scripts 增加  {"createLayerAppStart":"createLayerAppStart"}  之后执行 npm run createLayerAppStart
+2-3. 手动复制 node_modules/layer-app/ 下的 layerAppStart 目录  到项目根目录(连同目录一起复制)
 
-3. 在项目使用 layer-app 前引入 modelConfig 如在 main.ts 中 import "root/modelConfig";
+3. 在项目使用 layer-app 前引入 layerAppStart 如在 main.ts 中 import "root/layerAppStart";
 ```
 
 ## 功能介绍与前期准备
 
 ```typescript
 /**
- * 后续介绍，假定使用初始的modelConfig,接口返回数据格式为 {code:0,msg:"成功",data:'接口数据,任意内容'}
+ * 后续介绍，假定使用初始的layerAppStart,接口返回数据格式为 {code:0,msg:"成功",data:'接口数据,任意内容'}
  * 项目内容如下
  */
 import {BaseLoading, RequestModel, LoadingRequest, setLoadingMap, setLoadingConfig, setRequestMap} from "layer-app";
@@ -63,7 +63,7 @@ import {BaseLoading, RequestModel, LoadingRequest, setLoadingMap, setLoadingConf
 
 /**
  后续将分为  加载类  BaseLoading  ,请求类 LoadingRequest, 模型 RequestModel 三个部分介绍。
- setLoadingMap,setLoadingConfig,setRequestMap为配置项，在modelConfig/index.ts中被使用
+ setLoadingMap,setLoadingConfig,setRequestMap为配置项，在layerAppStart/index.ts中被使用
  其初始内容如下，使用时根据项目实际情况修改配置。
  */
 
@@ -119,14 +119,14 @@ IRequestConfig extends AxiosRequestConfig {
 用于页面切换时,取消请求中的接口等操作。
 
 用于完成请求的实例方法介绍
-setUseLoading 设置本次请求是否使用加载效果,并返回自身，不调用时，根据modelConfig 中的配置决定是否使用。
-setLoading(loadingKey,loadingOptions) 设置本次请求使用的加载类以及对加载类的配置，加载类在modelConfig 完成配置。
+setUseLoading 设置本次请求是否使用加载效果,并返回自身，不调用时，根据layerAppStart 中的配置决定是否使用。
+setLoading(loadingKey,loadingOptions) 设置本次请求使用的加载类以及对加载类的配置，加载类在layerAppStart 完成配置。
 request(config: Partial<IRequestConfig> = {})   使用axios发起请求。可选参数
 setGet(url: string, params: object = {}, config: Partial<Config> = {}):this   设置get请求
 setPost(url: string, data: any = {}, params: object = {}, config: Partial<Config> = {}):this  设置post请求
 
 至此，请求类已可以完成请求，获取数据 如 (new DemoRequest).setLoading().request().then(res=>{})
-如果不需要模型功能，仅使用以上功能，或适用继承对接口分组，也是可行的。具体参考 modelConfig中的DemoRequest
+如果不需要模型功能，仅使用以上功能，或适用继承对接口分组，也是可行的。具体参考 layerAppStart中的DemoRequest
 
 
 用于配置模型的实例方法介绍
@@ -142,7 +142,7 @@ reqManyOther 请求接口并返回模型数组和其他数据,要求data中有�
 
 reqOneOther 必定含有model 字段 ,reqManyOther 必定含有 models 字段
 
-更多细节,查看modelConfig 中的  DemoModel
+更多细节,查看layerAppStart 中的  DemoModel
 ```
 
 ## 模型类
@@ -182,5 +182,5 @@ newReq  静态方法newReq 会实例一个 请求类,接收参数为 请求中�
 
 建议在模型 静态异步方法中完成接口请求，获取模型；实例方法中，变更内容（如收藏，点赞，修改内容等）,扩展模型内容（字段转换等）。
 
-更多细节，参考 modelConfig 和 layer-app/example 中的内容
+更多细节，参考 layerAppStart 和 layer-app/example 中的内容
 ```

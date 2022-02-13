@@ -1,4 +1,4 @@
-import {requestClassMapType} from "root/modelConfig";
+import {requestClassMapType} from "root/layerAppStart";
 import LoadingRequest from "../Request/LoadingRequest";
 
 export type reqKeys = keyof requestClassMapType

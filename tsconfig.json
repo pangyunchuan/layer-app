@@ -22,7 +22,7 @@
     "paths": {
       "root/*": ["*"],
       "layer-app/*": ["*"],
-      "layer-app": ["./lib/main.ts"]
+      "layer-app": ["./lib/index.ts"]
     }
   },
   "include": [
