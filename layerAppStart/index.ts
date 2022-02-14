@@ -5,19 +5,19 @@ import {setLoadingMap, setRequestMap, setLoadingConfig} from "layer-app";
 //demoModel 仅供参考,不应再  layerAppStart中调用.
 // import DemoModel from "layer-app/example/DemoModel";
 
-// 加载默认配置设置
-(new ElPlusLoading).setDefaultConfig({
+
+//设置 加载类 默认配置设置
+ElPlusLoading.setDefaultConfig({
     target: 'body',
     text: '加载中',
     // lock: true,
     spinner: "el-icon-loading",
     // background: "transparent"
     background: "rgba(50, 50, 50, 0.5)"
-});
-(new VantToastLoading).setDefaultConfig({
+})
+VantToastLoading.setDefaultConfig({
     message: '加载中'
 })
-
 
 /**
  * 加载类配置，在请求类中被使用时，传入键名确定加载类，具体使用后续介绍

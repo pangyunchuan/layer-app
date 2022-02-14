@@ -15,7 +15,7 @@ export default abstract class BaseLoading<Options extends {}, InstType> {
     protected static defaultConfigByClassName: {
         [key: string]: BaseLoading<any, any>["options"];
     };
-    setDefaultConfig(options: Options): void;
+    static setDefaultConfig<Loading extends BaseLoading<any, any>>(this: new () => Loading, options: Loading['_options']): void;
     _options: Options;
     protected options: Options;
     constructor(inputConfig?: Options);

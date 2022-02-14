@@ -1,21 +1,8 @@
 ## 项目介绍
 
 ```text
-layer-app 是一个，使用typescript，面向对象的，web端的对象关系映射器（ORM）。
-让web项目能有简单的模型功能，也能便于前端项目代码分层。
-由于做后端时，使用php的laravel框架，所以该orm参考与laravel，当然由于从接口获取数据与从数据查询数据的差异，
-无法实现后端orm查询方法那样的高度封装，只能实现简单的模型功能。
-如果项目使用的RESTFUL风格接口，可能会有更接近后端的体验。
+layer-app 一套用于支持代码面向对象，mvc分层的渐进式框架。其中orm主要参考了laravel的orm
 
-laravel中 模型 有 $attributes 保存模型属性，layer-app中 使用 data 属性。
-laravel中 可定义模型关联, layer-app中 需要手动实现模型关联,demo中有示例。
-laravel中 查询多个结果会得到 集合,layer-app 会得到 模型数组。
-laravel中 可定义属性修改器,其中访问器修改器（getter，setter），ts的语法自带；
-然后属性转换，自定义类型转换，也能通过自定义转换自己实现。
-laravel中预定义的属性转换，可能就日期类型有用点，比如php 数字 分为 integer,float,double。而ts中都是number。
-总之属性转换这块，可能后续会增加这个功能，但通常自定义处理也能满足。
-
-总之目前作为一个针对接口的基础ORM已经可以使用，更多功能需要根据实际项目进行扩展。
 
 必要依赖
 axios

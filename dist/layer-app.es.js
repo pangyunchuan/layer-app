@@ -1,6 +1,4 @@
 var __defProp = Object.defineProperty;
-var __defProps = Object.defineProperties;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
@@ -16,7 +14,6 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
@@ -189,13 +186,40 @@ const _BaseRequest = class {
       throw this.errorHandle();
     });
   }
-  setGet(url, params = {}, config = {}) {
-    this.config = __spreadValues(__spreadProps(__spreadValues({}, this.config), { url, params }), config);
+  set(key, val) {
+    this.config[key] = val;
     return this;
   }
-  setPost(url, data = {}, params = {}, config = {}) {
-    this.config = __spreadValues(__spreadProps(__spreadValues({}, this.config), { url, data, params }), config);
+  setConfig(config) {
+    this.config = __spreadValues(__spreadValues({}, this.config), config);
     return this;
+  }
+  setNoData(url, params = {}, config = {}) {
+    return this.set("url", url).set("params", params).setConfig(config);
+  }
+  setHasData(url, data = {}, params = {}, config = {}) {
+    return this.set("url", url).set("data", data).set("params", params).setConfig(config);
+  }
+  setGet(url, params = {}, config = {}) {
+    return this.set("method", "get").setNoData(url, params, config);
+  }
+  setDelete(url, params = {}, config = {}) {
+    return this.set("method", "delete").setNoData(url, params, config);
+  }
+  setHead(url, params = {}, config = {}) {
+    return this.set("method", "head").setNoData(url, params, config);
+  }
+  setOptions(url, params = {}, config = {}) {
+    return this.set("method", "options").setNoData(url, params, config);
+  }
+  setPost(url, data = {}, params = {}, config = {}) {
+    return this.set("method", "post").setHasData(url, data, params, config);
+  }
+  setPut(url, data = {}, params = {}, config = {}) {
+    return this.set("method", "put").setHasData(url, data, params, config);
+  }
+  setPatch(url, data = {}, params = {}, config = {}) {
+    return this.set("method", "patch").setHasData(url, data, params, config);
   }
 };
 let BaseRequest = _BaseRequest;
@@ -254,8 +278,8 @@ const _BaseLoading = class {
   get classname() {
     return this.constructor.name;
   }
-  setDefaultConfig(options) {
-    _BaseLoading.defaultConfigByClassName[this.classname] = options;
+  static setDefaultConfig(options) {
+    _BaseLoading.defaultConfigByClassName[this.name] = options;
   }
   get fullInst() {
     const className = this.constructor.name;
@@ -332,37 +356,37 @@ const _BaseLoading = class {
 let BaseLoading = _BaseLoading;
 __publicField(BaseLoading, "defaultConfigByClassName", {});
 __publicField(BaseLoading, "_firstFullInstMapByClassName", {});
-const _VmVue3 = class {
+const _Vue3Controller = class {
   constructor() {
     __publicField(this, "key", "default");
-    __publicField(this, "isDestroy", false);
+    __publicField(this, "isSetDestroy", false);
   }
-  static create(key = "default", destroy = true) {
+  static findOrCreate(key = "default") {
     var _a, _b;
-    _VmVue3.map[this.name] = (_a = _VmVue3.map[this.name]) != null ? _a : {};
-    _VmVue3.map[this.name][key] = (_b = _VmVue3.map[this.name][key]) != null ? _b : ref(new this());
-    const vm = _VmVue3.map[this.name][key].value;
-    vm.key = key;
-    vm.setDestroy(key, destroy);
-    return _VmVue3.map[this.name][key];
+    _Vue3Controller.map[this.name] = (_a = _Vue3Controller.map[this.name]) != null ? _a : {};
+    _Vue3Controller.map[this.name][key] = (_b = _Vue3Controller.map[this.name][key]) != null ? _b : ref(new this());
+    const controller = _Vue3Controller.map[this.name][key].value;
+    controller.key = key;
+    return _Vue3Controller.map[this.name][key];
   }
   reset() {
-    const newVm = new this.constructor();
-    newVm.key = this.key;
-    newVm.isDestroy = this.isDestroy;
-    _VmVue3.map[this.constructor.name][this.key].value = newVm;
+    const newController = new this.constructor();
+    newController.key = this.key;
+    newController.isSetDestroy = this.isSetDestroy;
+    _Vue3Controller.map[this.constructor.name][this.key].value = newController;
   }
-  setDestroy(key, destroy) {
-    if (this.isDestroy || !destroy) {
+  setDestroy() {
+    if (this.isSetDestroy) {
       return;
     }
-    this.isDestroy = true;
+    this.isSetDestroy = true;
+    const key = this.key;
     const classname = this.constructor.name;
     onBeforeUnmount(() => {
-      delete _VmVue3.map[classname][key];
+      delete _Vue3Controller.map[classname][key];
     });
   }
 };
-let VmVue3 = _VmVue3;
-__publicField(VmVue3, "map", {});
-export { BaseLoading, LoadingRequest, RequestModel, VmVue3, setLoadingConfig, setLoadingMap, setRequestMap };
+let Vue3Controller = _Vue3Controller;
+__publicField(Vue3Controller, "map", {});
+export { BaseLoading, LoadingRequest, RequestModel, Vue3Controller, setLoadingConfig, setLoadingMap, setRequestMap };

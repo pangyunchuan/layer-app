@@ -10,16 +10,15 @@
     "type": "git",
     "url": "git+https://github.com/pangyunchuan/layer-app"
   },
-  "description": "一个基于ts,axios的web端orm",
+  "description": "一套用于支持代码面向对象，mvc分层的渐进式框架",
   "keywords": [
     "mvc",
     "oop",
     "layer",
     "app",
+    "orm",
     "mvvm",
     "api",
-    "orm",
-    "xhr",
     "promise",
     "ajax"
   ],
