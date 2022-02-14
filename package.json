@@ -26,14 +26,14 @@
     "bin",
     "dist",
     "layerAppStart",
-    "types/lib",
-    "example"
+    "types/lib"
   ],
   "bin": {
     "createLayerAppStart": "bin/init.js"
   },
   "scripts": {
-    "build": "vite build"
+    "build": "vite build",
+    "testInit": "node ./bin/init.js"
   },
   "peerDependencies": {
     "axios": "^0.25",

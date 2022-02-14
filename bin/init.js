@@ -4,16 +4,18 @@ const path = require("path");
 
 const rootPath = process.cwd();
 
-const useConfigPath = path.resolve(rootPath, "layerAppStart/index.ts");
+const dirName = 'layerAppStart'
 
+const useDir = path.resolve(rootPath, dirName);
 
-const useDir = path.dirname(useConfigPath);
+const packageRootDir = path.resolve(path.dirname(__dirname), dirName);
 
-const packageRoot = path.dirname(__dirname);
-
-if (!fs.existsSync(useConfigPath)) {
+if (!fs.existsSync(path.resolve(useDir, 'index.ts')) && !fs.existsSync(path.resolve(useDir, 'index.js'))) {
     if (!fs.existsSync(useDir)) {
         fs.mkdirSync(useDir)
     }
-    fs.copyFileSync(path.resolve(packageRoot, "layerAppStart/index.ts"), useConfigPath)
+    const files = fs.readdirSync(packageRootDir)
+    for (const file of files) {
+        fs.copyFileSync(path.resolve(packageRootDir, file), path.resolve(useDir, file))
+    }
 }

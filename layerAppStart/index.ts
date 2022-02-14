@@ -1,9 +1,9 @@
-import ElPlusLoading from "layer-app/example/ElPlusLoading";
-import VantToastLoading from "layer-app/example/VantToastLoading";
-import DemoRequest from "layer-app/example/DemoRequest";
+import ElPlusLoading from "./ElPlusLoading";
+import VantToastLoading from "./VantToastLoading";
+import DemoRequest from "./DemoRequest";
 import {setLoadingMap, setRequestMap, setLoadingConfig} from "layer-app";
 //demoModel 仅供参考,不应再  layerAppStart中调用.
-// import DemoModel from "layer-app/example/DemoModel";
+// import DemoModel from "./DemoModel";
 
 
 //设置 加载类 默认配置设置
