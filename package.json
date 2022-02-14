@@ -26,7 +26,8 @@
     "bin",
     "dist",
     "layerAppStart",
-    "types/lib"
+    "types/lib",
+    "example"
   ],
   "bin": {
     "createLayerAppStart": "bin/init.js"

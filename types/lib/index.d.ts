@@ -4,4 +4,5 @@ import BaseLoading from "./Loading/BaseLoading";
 import { setLoadingMap, setLoadingConfig } from "./config/loadingClassConfig";
 import { setRequestMap } from "./config/requestClassConfig";
 import Vue3Controller from "root/lib/Controller/Vue3Controller";
-export { Vue3Controller, BaseLoading, RequestModel, LoadingRequest, setLoadingMap, setLoadingConfig, setRequestMap };
+import BaseRequest from "root/lib/Request/BaseRequest";
+export { Vue3Controller, BaseLoading, BaseRequest, LoadingRequest, RequestModel, setLoadingMap, setLoadingConfig, setRequestMap };

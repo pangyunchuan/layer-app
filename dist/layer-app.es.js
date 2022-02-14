@@ -389,4 +389,4 @@ const _Vue3Controller = class {
 };
 let Vue3Controller = _Vue3Controller;
 __publicField(Vue3Controller, "map", {});
-export { BaseLoading, LoadingRequest, RequestModel, Vue3Controller, setLoadingConfig, setLoadingMap, setRequestMap };
+export { BaseLoading, BaseRequest, LoadingRequest, RequestModel, Vue3Controller, setLoadingConfig, setLoadingMap, setRequestMap };
