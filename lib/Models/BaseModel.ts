@@ -8,13 +8,48 @@
 
 
 export default abstract class BaseModel<ModelData extends object = {}> {
+    /**
+     * 获取类型,未使用
+     */
+    _data?: ModelData;
+
     protected abstract data: ModelData;
 
     //是否已代理数据
     private isProxyData: boolean = false;
 
+    //无法做到,会让后代提示,this类型问题
+    // constructor() {
+    //     // super(props);
+    //     return this.proxyData()
+    // }
+
+    /**
+     * 创建模型
+     * @param data
+     * @param call
+     */
+    static createModel<M extends BaseModel, Da extends NonNullable<M['_data']> = NonNullable<M['_data']>>(
+        this: new () => M, data?: Da, call?: (model: M & Da) => void
+    ): M & Da {
+        return new this().createModel(data, call)
+    }
+
+    /**
+     * 创建模型
+     * @param data
+     * @param call
+     */
+    createModel<Da extends ModelData>(data?: Da, call?: (model: this & Da) => void): this & Da {
+        const self = this.proxyData<Da>()
+        data && (self.data = data);
+        call && call(self)
+        return self
+    }
+
+
     //代理 data 数据
-    proxyData<MD = ModelData>(): this & MD {
+    protected proxyData<MD = ModelData>(): this & MD {
         if (this.isProxyData) {
             return <this & MD>this
         }

@@ -3,10 +3,10 @@ import VantToastLoading from "./VantToastLoading";
 import DemoRequest from "./DemoRequest";
 import {setLoadingMap, setRequestMap, setLoadingConfig} from "layer-app";
 //demoModel 仅供参考,不应再  layerAppStart中调用.
-// import DemoModel from "./DemoModel";
+//这里配置项仅供参考,不符合要求,就删掉或自定义。
 
 
-//设置 加载类 默认配置设置
+//设置 element-plus 加载类 默认配置设置,使用前,需要安装element-plus
 ElPlusLoading.setDefaultConfig({
     target: 'body',
     text: '加载中',
@@ -15,12 +15,14 @@ ElPlusLoading.setDefaultConfig({
     // background: "transparent"
     background: "rgba(50, 50, 50, 0.5)"
 })
+//设置 vant.toast 加载类 默认配置设置,使用前,需要安装vant
 VantToastLoading.setDefaultConfig({
     message: '加载中'
 })
 
 /**
  * 加载类配置，在请求类中被使用时，传入键名确定加载类，具体使用后续介绍
+ * default 必须设置,其他可删除
  * 请注意 这两种ui加载效果，使用前需要安装ui库
  */
 const loadingClassMap = {
@@ -36,6 +38,7 @@ setLoadingConfig({use: true})
 
 /**
  * 请求类配置，在模型类中被使用时，传入键名确定请求类
+ * default 必须设置,其他可删除
  */
 const requestClassMap = {
     default: DemoRequest,

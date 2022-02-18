@@ -1,11 +1,10 @@
 <template>
-  <div>
-    册数
-  </div>
+  <Test></Test>
 </template>
 
 <script lang="ts" setup>
-import {RequestModel} from 'layer-app'
+import Test from './Test.vue';
+import {Controller,RequestModel} from 'layer-app'
 
 interface Te {
   f1: string,

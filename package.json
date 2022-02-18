@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/pangyunchuan/layer-app"
   },
-  "description": "一套用于支持代码面向对象，mvc分层的渐进式框架",
+  "description": "一套可选的，用于支持js/ts代码面向对象，mvc分层架构以及模块化组织代码的渐进式框架。",
   "keywords": [
     "mvc",
     "oop",
@@ -27,7 +27,8 @@
     "dist",
     "layerAppStart",
     "types/lib",
-    "example"
+    "optional/viteAutoRoute.ts",
+    "optional/vitePluginMockServe.ts"
   ],
   "bin": {
     "createLayerAppStart": "bin/init.js"
@@ -40,6 +41,7 @@
     "axios": "^0.25",
     "element-plus": "^1.1.0-beta.19",
     "lodash-es": "^4.17",
+    "mockjs": "^1.1.0",
     "vant": "^3.2.3",
     "vue": "^3.2.30"
   },
@@ -47,12 +49,19 @@
     "element-plus": {
       "optional": true
     },
+    "mockjs": {
+      "optional": true
+    },
     "vant": {
+      "optional": true
+    },
+    "vue": {
       "optional": true
     }
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.5",
+    "@types/mockjs": "^1.0.6",
     "@types/node": "^16.11.11",
     "@vitejs/plugin-vue": "^2.0.0",
     "typescript": "^4.5.2",
@@ -63,6 +72,6 @@
       "import": "./dist/layer-app.es.js",
       "require": "./dist/layer-app.umd.js"
     },
-    "./example/*": "./example/*"
+    "./optional/*": "./optional/*"
   }
 }

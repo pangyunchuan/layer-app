@@ -37,7 +37,7 @@ export default class DemoModel extends RequestModel<IDemo> {
     protected init() {
         const relationData = this.data.relationData
         if (relationData) {
-            this.relationOne = new RelationDataModel().newFromReq(relationData, (model) => {
+            this.relationOne = new RelationDataModel().createModel(relationData, (model) => {
                 // model.demoId
             })
             // this.relationOne.demoId
@@ -135,6 +135,14 @@ new DemoModel().test().then(re => {
 DemoModel.getWithOther().then(r => {
     r.models[0].test()
 })
+const data: IDemo = {
+    id: "id", name: "", demoField: '11', modelAttr: 'data'
+};
+DemoModel.createModel().demoField;
+// dd.demoField
+(new DemoModel).createModel().demoField;
+const cc = DemoModel.createModel(data)
+cc.demoField
 
 //关系模型,不会从接口获取数据
 class RelationDataModel extends RequestModel<IRelationData> {

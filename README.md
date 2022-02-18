@@ -1,15 +1,39 @@
 ## 项目介绍
 
 ```text
-layer-app 一套用于支持代码面向对象，mvc分层的渐进式框架。其中orm主要参考了laravel的orm
+layer-app 一套可选的，用于支持js/ts代码面向对象，mvc分层架构以及模块化组织代码的渐进式框架。建议使用ts。
+主要用vue3 setup项目说明。
+
+下面介绍本项目中核心概念 v c m 分层。
+
+首先是v，由于mvvm中的v vm 总是一一对应,(.vue 中 vm 与 v在一起) 所以我们将其统一视为 v。
+
+然后是 c，本项目提供一个控制器基类，用用于向 v 提供数据,响应事件,与后端控制器有所差别的是，它还可以是复用的，响应式的。
+如一个UserController 可以获取用户信息,但他获取的用户信息在一个页面多个后代组件中使用,此时需要一份数据共享使用,且需要响应式。后续具体说明。
+
+最后m， 本项目提供一个模型基类，接受c调用，完成与接口交互，获取变更数据。
+
+其他内容,request，请求类，对axios的封装，使用时，需要实现其抽象类，并实现类似axios的请求/响应拦截处理。
+他可以当成一个请求封装库直接使用,但在这里主要是用于被 m 调用,完成数据获取。
+loading，加载类，用于被request类使用，用于接口请求较慢时展示加载效果。使用时，需要实现其抽象类，可实现 elementui vant 等不同ui组件库的加载展示。
+
+mvc是基础的分层,在其中要遵循一些规则
+1.上层调用下层,也就是,v->c->m 不能反向调用。
+2.业务简单可以跨层调用。
+3.业务复杂时，可以增加更多的层，如上面的 request,或者增加一个service 专注业务逻辑
+4.同层可以互相调用,也就是v中可以使用其他v,比如页面中使用很多后代组件，但应少用。
 
 
-必要依赖
-axios
-lodash-es
-可选依赖(仅在使用这两种种加载效果时必要)
-element-plus
-vant
+
+当这样分层后，我们甚至可能实现，一段用户逻辑的多端(pc,mobile)复用。
+比如一个用户详情的业务逻辑，不论在哪里，都是 用户昵称，用户id等内容，操作也是，变更状态，修改性别等等。
+然而不同终端页面样式差异却很大，不仅如此，在pc页面中，除了用户详情的内容，还会有其他内容。
+当分层后，一个Controller却可以同时支持不同终端。当然可能需要打包进行一些处理，不同终端页面分别打包，但业务却是共享的。
+
+
+虽然每个功能都是可选使用的
+但在使用m时，必须要实现request，且需要完成下面将会提到的 layerAppStart/index.ts 中的配置。
+具体使用,查看 layerAppStart  中的示例文件
 ```
 
 ## 安装和使用准备
@@ -30,7 +54,7 @@ npm install layer-app
     }
   }
 }
-2. 项目增加模型配置文件,项目根目录增加  layerAppStart/index.ts  可通过如下方式初始化配置文件
+2. 项目增加 layer-app 入口 文件,需要在项目根目录下增加layerAppStart目录,可通过如下方式添加
 2-1. 项目根目录下执行命令 node .\node_modules\.bin\createLayerAppStart.cmd
 2-2. package.json 中 scripts 增加  {"createLayerAppStart":"createLayerAppStart"}  之后执行 npm run createLayerAppStart
 2-3. 手动复制 node_modules/layer-app/ 下的 layerAppStart 目录  到项目根目录(连同目录一起复制)
@@ -38,24 +62,36 @@ npm install layer-app
 3. 在项目使用 layer-app 前引入 layerAppStart 如在 main.ts 中 import "root/layerAppStart";
 ```
 
-## 功能介绍与前期准备
-
 ```typescript
-/**
- * 后续介绍，假定使用初始的layerAppStart,接口返回数据格式为 {code:0,msg:"成功",data:'接口数据,任意内容'}
- * 项目内容如下
- */
-import {BaseLoading, RequestModel, LoadingRequest, setLoadingMap, setLoadingConfig, setRequestMap} from "layer-app";
+// layerAppStart/index.ts
+//主要是模型相关的配置
+
+import ElPlusLoading from "./ElPlusLoading";
+import VantToastLoading from "./VantToastLoading";
+import DemoRequest from "./DemoRequest";
+import {setLoadingMap, setRequestMap, setLoadingConfig} from "layer-app";
+//demoModel 仅供参考,不应再  layerAppStart中调用.
+//这里配置项都供参考,用不到就删掉.
 
 
-/**
- 后续将分为  加载类  BaseLoading  ,请求类 LoadingRequest, 模型 RequestModel 三个部分介绍。
- setLoadingMap,setLoadingConfig,setRequestMap为配置项，在layerAppStart/index.ts中被使用
- 其初始内容如下，使用时根据项目实际情况修改配置。
- */
+//设置 element-plus 加载类 默认配置设置,使用前,需要安装element-plus
+ElPlusLoading.setDefaultConfig({
+    target: 'body',
+    text: '加载中',
+    // lock: true,
+    spinner: "el-icon-loading",
+    // background: "transparent"
+    background: "rgba(50, 50, 50, 0.5)"
+})
+//设置 vant.toast 加载类 默认配置设置,使用前,需要安装vant
+VantToastLoading.setDefaultConfig({
+    message: '加载中'
+})
 
 /**
  * 加载类配置，在请求类中被使用时，传入键名确定加载类，具体使用后续介绍
+ * default 必须设置,其他可删除
+ * 请注意 这两种ui加载效果，使用前需要安装ui库
  */
 const loadingClassMap = {
     default: ElPlusLoading,
@@ -63,111 +99,30 @@ const loadingClassMap = {
     elPlus: ElPlusLoading
 }
 setLoadingMap(loadingClassMap)
+
 //配置默认情况是否使用加载功能
 setLoadingConfig({use: true})
 
+
 /**
  * 请求类配置，在模型类中被使用时，传入键名确定请求类
+ * default 必须设置,其他可删除
  */
 const requestClassMap = {
     default: DemoRequest,
     demo: DemoRequest
 }
 setRequestMap(requestClassMap)
-```
 
-## 加载类
 
-```text
-加载类主要为请求时间时间较长时展示加载效果，主要在接口调用时被使用。
-主要分为两种，全屏加载和局部加载。
-全屏加载为，某个时间端内请求的所有未完成的全局接口，展示这些接口的总数和已完成数，展示进度。
-局部加载：页面某个局部区域数据加载情况,对应单个接口。
+//用于ts类型提示,使用ts时,必备。
+export type loadingClassMapType = typeof loadingClassMap
+export type requestClassMapType = typeof requestClassMap
 
-BaseLoading 加载效果抽象类,所有的加载类，都需要实现它。
-在  layer-app/example 中 实现了  ElPlusLoading 和 VantToastLoading 两种加载类，若使用这两种ui库展示加载，可直接使用，
-但需要自行安装ui库，layer-app 自身不依赖UI库。若采用其他ui库或自行实现加载效果，可参考它们，实现新的加载类。
 ```
 
 
-## 请求类
 ```text
-请求抽象类为 LoadingRequest，使用 axios 完成接口请求。,所有请求类都要实现它。
-请求类中需要实现 请求处理,响应处理,异常处理。
-其中响应处理中处理axios response，保证仅返回接口数据部分，根据demo接口约定为  response.data.data
+建议目录结构,待增加
 
-axios中有取消请求功能，在 layer-app 中 增加了如下请求配置,已完成该功能
-请求config参数
-IRequestConfig extends AxiosRequestConfig {
-  cancelMark?: string;// 为空 字符时，表示必要接口，不会被取消请求
-}
-其余与 axios config 一致
-
-用于页面切换时,取消请求中的接口等操作。
-
-用于完成请求的实例方法介绍
-setUseLoading 设置本次请求是否使用加载效果,并返回自身，不调用时，根据layerAppStart 中的配置决定是否使用。
-setLoading(loadingKey,loadingOptions) 设置本次请求使用的加载类以及对加载类的配置，加载类在layerAppStart 完成配置。
-request(config: Partial<IRequestConfig> = {})   使用axios发起请求。可选参数
-setGet(url: string, params: object = {}, config: Partial<Config> = {}):this   设置get请求
-setPost(url: string, data: any = {}, params: object = {}, config: Partial<Config> = {}):this  设置post请求
-
-至此，请求类已可以完成请求，获取数据 如 (new DemoRequest).setLoading().request().then(res=>{})
-如果不需要模型功能，仅使用以上功能，或适用继承对接口分组，也是可行的。具体参考 layerAppStart中的DemoRequest
-
-
-用于配置模型的实例方法介绍
-当接口返回数据为  {code:0,msg:"成功",data:'接口数据,任意内容'}
-reqOne 请求接口并返回单个模型,要求data中都是模型数据
-reqMany  请求接口返回模型数组,要求data中都是模型数据组成的数组
-
-reqOneOther  请求接口并返回单个模型和其他数据,要求data中有一个字段是模型数据,其他字段不是模型数据, 
-如接口数据 {test:1,modelData:{xx}} 其中modelData为模型数据 则返回  {test:1,model:DemoModel}
-
-reqManyOther 请求接口并返回模型数组和其他数据,要求data中有一个字段是模型数据数组,其他字段不是模型数据,
-如 接口数据 {total:100,modelDatas:[]}   则返回 {total:100,models"[]}
-
-reqOneOther 必定含有model 字段 ,reqManyOther 必定含有 models 字段
-
-更多细节,查看layerAppStart 中的  DemoModel
-```
-
-## 模型类
-```text
-数据模型 是 某一种数据的模型,如用户模型，其中应当包含用户相关的数据处理，请求交互等内容。
-RequestModel 是抽象模型类，所有的模型类都需要实现它。
-所有模型都必须含有data 属性,用于存储模型数据,以区分模型数据与模型自身属性。
-模型必须设置 模型数据泛型。如下
-interface IDemo {
-    id: string;
-    name: string;
-}
-class DemoModel extends RequestModel<IDemo> {
-    protected data: IDemo = {
-        id: "", name: "",modelAttr:'data'
-    };
-    test:''
-    get modelAttr(){
-        return 'demoModel'
-    }
-    static async find(id:string) {
-        const url =  "/tt/234";
-        return this.newReq().setLoading().setGet(url, {id}).reqOne(this);
-    }
-}
-
-模型数据可直接通过模型访问
-const demoModel = new DemoModel();
-demoModel.id;demoModel.name;
-当模型自身属性与 模型数据名称相同时,优先访问自身属性,如 modelAttr,如此,方便 getter,setter转换属性。
-如 demoModel.modelAttr 的值 为  'demoModel' 而不是 'data'
-
-请求数据并获取模型
-静态异步方法find 中 展示了如何 请求数据获取模型。
-newReq  静态方法newReq 会实例一个 请求类,接收参数为 请求中提到的,请求类键名。
-其中 reqOne 方法 请求 中已经说明过。
-
-建议在模型 静态异步方法中完成接口请求，获取模型；实例方法中，变更内容（如收藏，点赞，修改内容等）,扩展模型内容（字段转换等）。
-
-更多细节，参考 layerAppStart 和 layer-app/example 中的内容
 ```

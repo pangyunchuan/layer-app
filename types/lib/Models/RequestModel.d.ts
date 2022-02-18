@@ -9,17 +9,16 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
     private get req();
     protected static setReq<M extends RequestModel<{}>>(this: new () => M, req: LoadingRequest): M;
     private setReq;
-    protected reqOne<MD = ModelData>(call?: (inst: this & MD) => void): Promise<this & MD>;
-    protected reqOneOther<ApiData extends object, DK extends keyof ApiData, MD = ModelData, M extends RequestModel<{}> = this>(dataKey: DK, call?: (inst: M & MD) => void): Promise<{
+    protected reqOne<MD extends ModelData = ModelData>(call?: (inst: this & MD) => void): Promise<this & MD>;
+    protected reqOneOther<ApiData extends object, DK extends keyof ApiData, MD extends ModelData = ModelData, M extends RequestModel<{}> = this>(dataKey: DK, call?: (inst: M & MD) => void): Promise<{
         model: (M & MD);
     } & Omit<ApiData, DK>>;
     /**
      * 请求并返回模型数据
      * @param call
      */
-    protected reqMany<MD = ModelData>(call?: (inst: this & MD) => void): Promise<(this & MD)[]>;
-    protected reqManyOther<ApiData extends object, DK extends keyof ApiData, MD = ModelData, M extends RequestModel<{}> = this>(dataKey: DK, call?: (inst: M & MD) => void): Promise<{
+    protected reqMany<MD extends ModelData = ModelData>(call?: (inst: this & MD) => void): Promise<(this & MD)[]>;
+    protected reqManyOther<ApiData extends object, DK extends keyof ApiData, MD extends ModelData = ModelData, M extends RequestModel<{}> = this>(dataKey: DK, call?: (inst: M & MD) => void): Promise<{
         models: (M & MD)[];
     } & Omit<ApiData, DK>>;
-    newFromReq<MD = ModelData>(data: any, call?: (inst: this & MD) => void): this & MD;
 }

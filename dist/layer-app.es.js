@@ -18,12 +18,87 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
+import { ref, onBeforeUnmount } from "vue";
 import { omit, debounce } from "lodash-es";
 import axios from "axios";
-import { ref, onBeforeUnmount } from "vue";
+const _BaseController = class {
+  constructor() {
+    __publicField(this, "key", "default");
+    __publicField(this, "isSetDestroy", false);
+    __publicField(this, "_type");
+  }
+  static useController(key = "default") {
+    var _a, _b;
+    _BaseController.map[this.name] = (_a = _BaseController.map[this.name]) != null ? _a : {};
+    _BaseController.map[this.name][key] = (_b = _BaseController.map[this.name][key]) != null ? _b : new this().createManType();
+    const controller = _BaseController.map[this.name][key].value;
+    controller.key = key;
+    return _BaseController.map[this.name][key];
+  }
+  setResetCall(call) {
+    var _a;
+    const name = this.constructor.name;
+    const key = this.key;
+    _BaseController.resetCallList[name] = (_a = _BaseController.resetCallList[name]) != null ? _a : {};
+    _BaseController.resetCallList[name][key] = _BaseController.resetCallList[name][key] || [];
+    _BaseController.resetCallList[name][key].push(call);
+  }
+  reset() {
+    const name = this.constructor.name;
+    const key = this.key;
+    const isSetDestroy = this.isSetDestroy;
+    const newController = new this.constructor();
+    newController.key = key;
+    newController.isSetDestroy = isSetDestroy;
+    _BaseController.map[name][key].value = newController;
+    const cMap = _BaseController.resetCallList[name];
+    if (cMap && cMap[key] && Array.isArray(cMap[key])) {
+      for (const resetCall of cMap[key]) {
+        resetCall();
+      }
+    }
+  }
+  destroy() {
+    const name = this.constructor.name;
+    const key = this.key;
+    const controllerMap = _BaseController.map[name];
+    delete controllerMap[key];
+    if (!Object.keys(controllerMap).length) {
+      delete _BaseController.map[name];
+    }
+  }
+};
+let BaseController = _BaseController;
+__publicField(BaseController, "map", {});
+__publicField(BaseController, "resetCallList", {});
+class Controller extends BaseController {
+  createManType() {
+    return { value: this };
+  }
+}
+class Vue3Controller extends BaseController {
+  createManType() {
+    return ref(this);
+  }
+  destroyOnBeforeUnmount() {
+    onBeforeUnmount(() => {
+      this.destroy();
+    });
+  }
+}
 class BaseModel {
   constructor() {
+    __publicField(this, "_data");
     __publicField(this, "isProxyData", false);
+  }
+  static createModel(data, call) {
+    return new this().createModel(data, call);
+  }
+  createModel(data, call) {
+    const self = this.proxyData();
+    data && (self.data = data);
+    call && call(self);
+    return self;
   }
   proxyData() {
     if (this.isProxyData) {
@@ -97,7 +172,7 @@ class RequestModel extends BaseModel {
   }
   get req() {
     if (!this._req) {
-      throw new Error(` \u8BF7\u6C42\u7C7B \u672A\u8BBE\u7F6E`);
+      throw new Error(`\u8BF7\u6C42\u7C7B \u672A\u8BBE\u7F6E`);
     }
     return this._req;
   }
@@ -110,13 +185,13 @@ class RequestModel extends BaseModel {
   }
   async reqOne(call) {
     return this.req.request().then((res) => {
-      return this.newFromReq(res, call);
+      return this.createModel(res, call);
     });
   }
   async reqOneOther(dataKey, call) {
     return this.req.request().then((res) => {
       const data = res[dataKey];
-      const model = this.newFromReq(data, call);
+      const model = this.createModel(data, call);
       return __spreadValues({ model }, omit(res, dataKey));
     });
   }
@@ -124,7 +199,7 @@ class RequestModel extends BaseModel {
     return this.req.request().then((res) => {
       let models = [];
       for (const da of res) {
-        models.push(this.newFromReq(res, call));
+        models.push(this.createModel(res, call));
       }
       return models;
     });
@@ -134,19 +209,10 @@ class RequestModel extends BaseModel {
       const dataList = res[dataKey];
       let models = [];
       for (const data of dataList) {
-        models.push(this.newFromReq(data, call));
+        models.push(this.createModel(data, call));
       }
       return __spreadValues({ models }, omit(res, dataKey));
     });
-  }
-  newFromReq(data, call) {
-    if (!data) {
-      throw new Error(`\u6A21\u578B\u6570\u636E\u6709\u8BEF:${data}`);
-    }
-    const model = new this.constructor(data).proxyData();
-    model.data = data;
-    call && call(model);
-    return model;
   }
 }
 const _BaseRequest = class {
@@ -356,37 +422,4 @@ const _BaseLoading = class {
 let BaseLoading = _BaseLoading;
 __publicField(BaseLoading, "defaultConfigByClassName", {});
 __publicField(BaseLoading, "_firstFullInstMapByClassName", {});
-const _Vue3Controller = class {
-  constructor() {
-    __publicField(this, "key", "default");
-    __publicField(this, "isSetDestroy", false);
-  }
-  static findOrCreate(key = "default") {
-    var _a, _b;
-    _Vue3Controller.map[this.name] = (_a = _Vue3Controller.map[this.name]) != null ? _a : {};
-    _Vue3Controller.map[this.name][key] = (_b = _Vue3Controller.map[this.name][key]) != null ? _b : ref(new this());
-    const controller = _Vue3Controller.map[this.name][key].value;
-    controller.key = key;
-    return _Vue3Controller.map[this.name][key];
-  }
-  reset() {
-    const newController = new this.constructor();
-    newController.key = this.key;
-    newController.isSetDestroy = this.isSetDestroy;
-    _Vue3Controller.map[this.constructor.name][this.key].value = newController;
-  }
-  setDestroy() {
-    if (this.isSetDestroy) {
-      return;
-    }
-    this.isSetDestroy = true;
-    const key = this.key;
-    const classname = this.constructor.name;
-    onBeforeUnmount(() => {
-      delete _Vue3Controller.map[classname][key];
-    });
-  }
-};
-let Vue3Controller = _Vue3Controller;
-__publicField(Vue3Controller, "map", {});
-export { BaseLoading, BaseRequest, LoadingRequest, RequestModel, Vue3Controller, setLoadingConfig, setLoadingMap, setRequestMap };
+export { BaseLoading, BaseRequest, Controller, LoadingRequest, RequestModel, Vue3Controller, setLoadingConfig, setLoadingMap, setRequestMap };

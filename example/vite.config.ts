@@ -1,8 +1,8 @@
 import vue from "@vitejs/plugin-vue";
 
 import {defineConfig} from "vite";
-import vitePluginMyMockServe from "./vitePluginMyMockServe.js";
-
+// import vitePluginMyMockServe from "layer-app/optional/vitePluginMyMockServe";
+import vitePluginMyMockServe from "./vitePluginMyMockServe";
 
 export default defineConfig({
     plugins: [

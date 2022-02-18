@@ -31,7 +31,7 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
 
     private get req(): LoadingRequest {
         if (!this._req) {
-            throw new Error(` 请求类 未设置`);
+            throw new Error(`请求类 未设置`);
         }
         return this._req
     }
@@ -41,28 +41,28 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
     }
 
     private setReq(req: LoadingRequest): this {
-        this._req = req.setUseLoading(this.useLoading);
+        this._req =  req.setUseLoading(this.useLoading);
         return this
     }
 
-    protected async reqOne<MD = ModelData>(
+    protected async reqOne<MD extends ModelData = ModelData>(
         call?: (inst: this & MD) => void
     ): Promise<this & MD> {
         return this.req.request().then(res => {
-            return this.newFromReq<MD>(res, <any>call)
+            return this.createModel<MD>(res, call)
         });
     }
 
     protected async reqOneOther<ApiData extends object,
         DK extends keyof ApiData,
-        MD = ModelData,
+        MD extends ModelData = ModelData,
         M extends RequestModel<{}> = this>(
         dataKey: DK,
         call?: (inst: M & MD) => void
     ): Promise<{ model: (M & MD) } & Omit<ApiData, DK>> {
         return this.req.request().then(res => {
             const data = res[dataKey];
-            const model: M & MD = this.newFromReq(data, call);
+            const model: M & MD = this.createModel(data, call);
             return {model, ...omit(res, dataKey)};
         });
     }
@@ -71,11 +71,11 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
      * 请求并返回模型数据
      * @param call
      */
-    protected async reqMany<MD = ModelData>(call?: (inst: this & MD) => void): Promise<(this & MD)[]> {
+    protected async reqMany<MD extends ModelData = ModelData>(call?: (inst: this & MD) => void): Promise<(this & MD)[]> {
         return this.req.request().then(res => {
             let models = [];
             for (const da of res) {
-                models.push(this.newFromReq<MD>(res, <any>call));
+                models.push(this.createModel<MD>(res, <any>call));
             }
             return models;
         });
@@ -83,7 +83,7 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
 
     protected async reqManyOther<ApiData extends object,
         DK extends keyof ApiData,
-        MD = ModelData,
+        MD extends ModelData = ModelData,
         M extends RequestModel<{}> = this>(
         dataKey: DK,
         call?: (inst: M & MD) => void
@@ -92,20 +92,9 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
             const dataList = res[dataKey];
             let models: (M & MD)[] = [];
             for (const data of dataList) {
-                models.push(<M & MD>this.newFromReq(data, call));
+                models.push(this.createModel(data, call));
             }
             return {models, ...omit(res, dataKey)};
         });
-    }
-
-    /*protected*/ newFromReq<MD = ModelData>(
-        data: any, call?: (inst: this & MD) => void): this & MD {
-        if (!data) {
-            throw new Error(`模型数据有误:${data}`)
-        }
-        const model: this & MD = (<this>new (<any>this.constructor)(data)).proxyData<MD>();
-        model.data = data;
-        call && call(model);
-        return model;
     }
 }

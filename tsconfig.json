@@ -20,18 +20,18 @@
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "root/*": ["*"],
-      "layer-app/*": ["*"],
-      "layer-app": ["./lib/index.ts"]
+      "root/*": [
+        "*"
+      ],
+      "layer-app/*": [
+        "*"
+      ],
+      "layer-app": [
+        "./lib/index.ts"
+      ]
     }
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "src/**/*.js",
-    "src/**/*.jsx",
     "lib/**/*.ts"
   ]
 }

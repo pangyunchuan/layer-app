@@ -1,23 +1,22 @@
-import path from "path";
-import fs from "fs";
 import Mock from "mockjs";
 import {Plugin, ResolvedConfig} from "vite";
-import url from "url";
+const url = require('url')
+const fs = require('fs')
+const path = require('path')
 
 /**
  * 模拟mock 接口 插件
  * @param config
  */
-const plugin = function (
+export default function (
     config = {
         path: "mock", // mock 目录，相对于vite项目 跟目录
         baseApi: "/apis", //mockApi 前缀
-        injectCode: ""
     }
 ): Plugin {
     let viteConfig: ResolvedConfig;
-    return {
-        name: "vite-plugin-myMockServe",
+    return <Plugin>{
+        name: "vite-plugin-layer-app-mock-serve",
         apply: "serve",
         enforce: "post",
         configResolved(resolvedConfig) {
@@ -89,4 +88,3 @@ const plugin = function (
         }
     };
 };
-export default plugin;

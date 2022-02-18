@@ -1,31 +1,14 @@
 import { Ref, UnwrapRef } from "@vue/reactivity";
-export default class Vue3Controller {
+import BaseController from "./BaseController";
+declare type Vue3RefController = Ref<UnwrapRef<Vue3Controller>>;
+export default class Vue3Controller extends BaseController<Vue3RefController> {
     /**
-     * vm map,按 classname 和 key 分类存放
-     * @private
+     * 创建 ref 控制器变量
      */
-    private static map;
-    /**
-     * 创建视图模型
-     * @param key  视图模型标记 默认 default
-     */
-    static findOrCreate<C extends Vue3Controller>(this: new () => C, key?: string | number): Ref<UnwrapRef<C>>;
-    /**
-     * 模型 标记 key
-     * @private
-     */
-    private key;
-    /**
-     * 是否设置销毁
-     * @private
-     */
-    private isSetDestroy;
-    /**
-     * 重置vm
-     */
-    reset(): void;
+    protected createManType(): Vue3RefController;
     /***
-     * 设置自身跟随组件一起销毁，仅跟随第一个设置的组件
+     * 组件销毁前，从管理列表销毁组件引用，vue3 setup 快捷写法,同 destroy 一样谨慎使用。
      */
-    setDestroy(): void;
+    destroyOnBeforeUnmount(): void;
 }
+export {};
