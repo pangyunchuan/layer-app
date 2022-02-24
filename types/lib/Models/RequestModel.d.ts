@@ -1,23 +1,80 @@
 import BaseModel from "./BaseModel";
 import { instanceTypeByKey, reqKeys } from "../config/requestClassConfig";
 import LoadingRequest from "root/lib/Request/LoadingRequest";
+/**
+ * 接口请求基础模型，用户定义接口对应的模型，并完成接口交互
+ * 接口请求方式  Model.setReq(this.newReq().setGet('url','params')).reqOne()
+ */
 export default abstract class RequestModel<ModelData extends object> extends BaseModel<ModelData> {
+    /**
+     * 该字段为  model.url 模型url，它将与 req.url(请求实例url) 配合，以确定请求地址
+     * model.url req.url 的 首尾 '/' 可要可不要，
+     * 但当 req.url  不包含 '/' 时    结果为  model.url + req.url，req.url  包含 '/' 时 结果 为 req.url
+     * req.url 在 配置模型请求时使用 如: this.newReq().setGet('url');
+     *
+     * 非 restful 列子
+     * model.url = /a/user/;req.url = list; =>  /a/user/list。
+     * req.url = /user; => /user。这对模型对应的某个接口地址不规则时有用。
+     *
+     * restfull接口
+     * model.url = /a/user;req.url = '';this.newReq().setGet(); => get /a/user。
+     * model.url = /a/user;req.url = '';this.newReq().setPost(); => post /a/user。
+     * @protected
+     */
+    protected abstract url: string;
+    /**
+     * 是否 默认启用loading，初始以配置值，单个模型可覆盖该值，手动设置loading时，该字段无效
+     * @protected
+     */
     protected useLoading: boolean;
+    /**
+     * 新建请求实例
+     * @param reqType
+     * @protected
+     */
     protected static newReq<Child extends RequestModel<any>, ReqType extends reqKeys = "default">(reqType?: ReqType): instanceTypeByKey[ReqType];
+    /**
+     * 新建请求实例
+     * @param reqType
+     * @protected
+     */
     protected newReq<ReqType extends reqKeys = "default">(reqType?: ReqType): instanceTypeByKey[ReqType];
     private _req?;
     private get req();
+    /**
+     * 设置 请求实例，发起请求前必须设置
+     * @param req
+     * @protected
+     */
     protected static setReq<M extends RequestModel<{}>>(this: new () => M, req: LoadingRequest): M;
     private setReq;
+    /**
+     * 发起请求，返回单个模型实例
+     * @param call
+     * @protected
+     */
     protected reqOne<MD extends ModelData = ModelData>(call?: (inst: this & MD) => void): Promise<this & MD>;
+    /**
+     * 发起请求，返回包含单个实例的对象，其中 model 字段为模型实例
+     * @param dataKey  响应数据中 模型数据所在字段
+     * @param call     模型实例创建后执行额回调函数
+     * @protected
+     */
     protected reqOneOther<ApiData extends object, DK extends keyof ApiData, MD extends ModelData = ModelData, M extends RequestModel<{}> = this>(dataKey: DK, call?: (inst: M & MD) => void): Promise<{
         model: (M & MD);
     } & Omit<ApiData, DK>>;
     /**
-     * 请求并返回模型数据
-     * @param call
+     * 发起请求，返回模型实例组成的数组
+     * @param call  每个模型实例创建后执行的回调函数
+     * @protected
      */
     protected reqMany<MD extends ModelData = ModelData>(call?: (inst: this & MD) => void): Promise<(this & MD)[]>;
+    /**
+     * 发起请求并返回包含模型实例数组的对象,其中  models 字段为模型实例数组
+     * @param dataKey  接口返回数据中，模型数据数组所在字段
+     * @param call     每个模型实例创建后执行的回调函数
+     * @protected
+     */
     protected reqManyOther<ApiData extends object, DK extends keyof ApiData, MD extends ModelData = ModelData, M extends RequestModel<{}> = this>(dataKey: DK, call?: (inst: M & MD) => void): Promise<{
         models: (M & MD)[];
     } & Omit<ApiData, DK>>;

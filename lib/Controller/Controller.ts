@@ -1,13 +1,14 @@
 import BaseController from "./BaseController";
 
-type NormalManController = { value: Controller }
-export default class Controller extends BaseController<NormalManController> {
+type NormalManController<C extends Controller> = { value: C }
+export default class Controller extends BaseController {
+
+    _type?: NormalManController<this>
+
     /**
      * 创建响控制器管理对象
      */
-    protected createManType(): NormalManController {
+    protected createManType(): NormalManController<this> {
         return {value: this}
     }
 }
-
-// Controller.findOrCreate().value.setOrGetDestroyFun()

@@ -2,7 +2,12 @@ import vue from "@vitejs/plugin-vue";
 
 import {defineConfig} from "vite";
 // import vitePluginMyMockServe from "layer-app/optional/vitePluginMyMockServe";
-import vitePluginMyMockServe from "./vitePluginMyMockServe";
+// import vitePluginMyMockServe from "./vitePluginMyMockServe";
+import vitePluginMyMockServe from "layer-app/optional/vitePluginMockServe.js";
+//
+// import viteAutoRoute from "layer-app/optional/viteAutoRoute.js";
+
+// console.log(viteAutoRoute)
 
 export default defineConfig({
     plugins: [

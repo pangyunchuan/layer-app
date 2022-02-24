@@ -24,6 +24,9 @@ export default class DemoModel extends RequestModel<IDemo> {
         id: "id", name: "", demoField: '11', modelAttr: 'data'
     };
 
+
+    protected url = ''
+
     get modelAttr() {
         // 模型自身属性名 与 data 中的属性名相同时,优先访问自身属性 也就是
         // (new DemoModel()).modelAttr  结果为  demoModel  而不是  data
@@ -146,6 +149,7 @@ cc.demoField
 
 //关系模型,不会从接口获取数据
 class RelationDataModel extends RequestModel<IRelationData> {
+    protected url = ''
     protected data: IRelationData = {
         demoId: '', id: '', name: ''
     }

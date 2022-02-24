@@ -1,6 +1,6 @@
 {
   "name": "layer-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "pangyunchuan",
   "license": "MIT",
   "main": "./dist/layer-app.umd.js",
@@ -26,9 +26,7 @@
     "bin",
     "dist",
     "layerAppStart",
-    "types/lib",
-    "optional/viteAutoRoute.ts",
-    "optional/vitePluginMockServe.ts"
+    "types/lib"
   ],
   "bin": {
     "createLayerAppStart": "bin/init.js"
@@ -38,12 +36,12 @@
     "testInit": "node ./bin/init.js"
   },
   "peerDependencies": {
-    "axios": "^0.25",
-    "element-plus": "^1.1.0-beta.19",
-    "lodash-es": "^4.17",
-    "mockjs": "^1.1.0",
-    "vant": "^3.2.3",
-    "vue": "^3.2.30"
+    "axios": "^0",
+    "element-plus": "^2",
+    "lodash-es": "^4",
+    "mockjs": "^1",
+    "vant": "^3",
+    "vue": "^3"
   },
   "peerDependenciesMeta": {
     "element-plus": {
@@ -71,7 +69,6 @@
     ".": {
       "import": "./dist/layer-app.es.js",
       "require": "./dist/layer-app.umd.js"
-    },
-    "./optional/*": "./optional/*"
+    }
   }
 }

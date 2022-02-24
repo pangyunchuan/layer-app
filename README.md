@@ -3,12 +3,17 @@
 ```text
 layer-app 一套可选的，用于支持js/ts代码面向对象，mvc分层架构以及模块化组织代码的渐进式框架。建议使用ts。
 主要用vue3 setup项目说明。
+本项目中 页面 和 组件 有所区分,页面主要指与路由对应,业务耦合度高,复用性低的组件。
+仅为页面所用的组件为页面组件
+页面组件往往是因为页面复杂，而将一个页面拆分为多个部分，没有复用性。
+普通组件参考 各种ui组件库的组件。
 
 下面介绍本项目中核心概念 v c m 分层。
 
 首先是v，由于mvvm中的v vm 总是一一对应,(.vue 中 vm 与 v在一起) 所以我们将其统一视为 v。
 
 然后是 c，本项目提供一个控制器基类，用用于向 v 提供数据,响应事件,与后端控制器有所差别的是，它还可以是复用的，响应式的。
+因为一个业务数据,往往会在前端多个组件,或页面中使用
 如一个UserController 可以获取用户信息,但他获取的用户信息在一个页面多个后代组件中使用,此时需要一份数据共享使用,且需要响应式。后续具体说明。
 
 最后m， 本项目提供一个模型基类，接受c调用，完成与接口交互，获取变更数据。
@@ -119,6 +124,12 @@ setRequestMap(requestClassMap)
 export type loadingClassMapType = typeof loadingClassMap
 export type requestClassMapType = typeof requestClassMap
 
+```
+
+
+### 可选项
+```text
+vitePluginMockServe
 ```
 
 

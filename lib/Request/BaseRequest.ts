@@ -4,6 +4,9 @@ export interface IRequestConfig extends AxiosRequestConfig {
     cancelMark?: string;// 为空 字符时，表示必要接口，不会被取消请求
 }
 
+/**
+ * 接口请求基类，用于完成接口请求
+ */
 export default abstract class BaseRequest<Config extends IRequestConfig = IRequestConfig> {
     protected static cancelMapByMark: { [key: string]: CancelTokenSource } = {};
 
@@ -22,7 +25,10 @@ export default abstract class BaseRequest<Config extends IRequestConfig = IReque
         config.cancelToken = cancelSource.token;
     }
 
-    //取消请求
+    /**
+     * 取消给定标记的未完成的请求
+     * @param mark
+     */
     static cancelByMark(mark: string): void {
         let {cancelMapByMark: map} = BaseRequest;
         //todo 必要请求，不能取消
@@ -33,18 +39,36 @@ export default abstract class BaseRequest<Config extends IRequestConfig = IReque
         delete map[mark];
     }
 
+    /**
+     * 请求配置，继承 axios config
+     * @protected
+     */
     protected config: Partial<Config> = {};
     protected response: AxiosResponse | undefined;
     protected error: AxiosError | Cancel | unknown | undefined;
 
-    //请求拦截
+    /**
+     * 设置请求拦截
+     * @protected
+     */
     protected abstract requestHandle(): void
 
-    //响应拦截
+    /**
+     * 设置响应拦截，当响应数据不符合要求时  throw this.response
+     * @protected
+     */
     protected abstract responseHandle(): any
 
-    protected abstract errorHandle(): any
+    /**
+     * 设置响应异常处理，总是
+     * @protected
+     */
+    protected abstract errorHandle(): Error
 
+    /**
+     * 发起请求
+     * @param config
+     */
     async request<ResData = any>(config: Partial<Config> = {}): Promise<ResData> {
         this.config = {...this.config, ...config};
 
@@ -69,7 +93,7 @@ export default abstract class BaseRequest<Config extends IRequestConfig = IReque
             // if (axios.isCancel(error)) {
             //   // 处理
             // }
-            // //处理 response reject
+            // //处理 其他error
             throw this.errorHandle()
         });
     }
@@ -77,6 +101,10 @@ export default abstract class BaseRequest<Config extends IRequestConfig = IReque
     set<Key extends keyof Config>(key: Key, val: Config[Key]): this {
         this.config[key] = val
         return this
+    }
+
+    get<Key extends keyof Config>(key: Key): Config[Key] | undefined {
+        return this.config[key]
     }
 
     setConfig(config: Partial<Config>): this {
@@ -92,31 +120,31 @@ export default abstract class BaseRequest<Config extends IRequestConfig = IReque
         return this.set('url', url).set('data', data).set("params", params).setConfig(config)
     }
 
-    setGet(url: string, params: any = {}, config: Partial<Config> = {}): this {
+    setGet(url: string = '', params: any = {}, config: Partial<Config> = {}): this {
         return this.set('method', 'get').setNoData(url, params, config)
     }
 
-    setDelete(url: string, params: any = {}, config: Partial<Config> = {}): this {
+    setDelete(url: string = '', params: any = {}, config: Partial<Config> = {}): this {
         return this.set('method', 'delete').setNoData(url, params, config)
     }
 
-    setHead(url: string, params: any = {}, config: Partial<Config> = {}): this {
+    setHead(url: string = '', params: any = {}, config: Partial<Config> = {}): this {
         return this.set('method', 'head').setNoData(url, params, config)
     }
 
-    setOptions(url: string, params: any = {}, config: Partial<Config> = {}): this {
+    setOptions(url: string = '', params: any = {}, config: Partial<Config> = {}): this {
         return this.set('method', 'options').setNoData(url, params, config)
     }
 
-    setPost(url: string, data: any = {}, params: any = {}, config: Partial<Config> = {}): this {
+    setPost(url: string = '', data: any = {}, params: any = {}, config: Partial<Config> = {}): this {
         return this.set('method', 'post').setHasData(url, data, params, config)
     }
 
-    setPut(url: string, data: any = {}, params: any = {}, config: Partial<Config> = {}): this {
+    setPut(url: string = '', data: any = {}, params: any = {}, config: Partial<Config> = {}): this {
         return this.set('method', 'put').setHasData(url, data, params, config)
     }
 
-    setPatch(url: string, data: any = {}, params: any = {}, config: Partial<Config> = {}): this {
+    setPatch(url: string = '', data: any = {}, params: any = {}, config: Partial<Config> = {}): this {
         return this.set('method', 'patch').setHasData(url, data, params, config)
     }
 }

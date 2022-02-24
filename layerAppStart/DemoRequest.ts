@@ -30,7 +30,7 @@ export default class DemoRequest extends LoadingRequest {
         return response.data.data;
     }
 
-    protected errorHandle() {
+    protected errorHandle():Error {
         let errorTip = "未知错误";
         if (axios.isAxiosError(this.error)) {
             const response = this.error.response;
@@ -38,14 +38,15 @@ export default class DemoRequest extends LoadingRequest {
                 if (response.status = 404) {
                     // 发起提示, 如 element.message
                     // 网络请求不存在
+                    throw this.error
                 }
             }
         } else if (axios.isCancel(this.error)) {
-            console.log("取消请求：", (<Cancel>this.error).message);
+            throw new Error("取消请求：" + (<Cancel>this.error).message)
         }
 
-        //抛出异常
-        throw this.error
+        //抛出其他异常，可根据error 类型返回
+        throw new Error('未知异常');
         // return this.error;
     }
 }

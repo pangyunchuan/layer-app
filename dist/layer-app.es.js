@@ -19,15 +19,14 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 import { ref, onBeforeUnmount } from "vue";
-import { omit, debounce } from "lodash-es";
+import { trim, omit, debounce } from "lodash-es";
 import axios from "axios";
 const _BaseController = class {
   constructor() {
     __publicField(this, "key", "default");
     __publicField(this, "isSetDestroy", false);
-    __publicField(this, "_type");
   }
-  static useController(key = "default") {
+  static use(key = "default") {
     var _a, _b;
     _BaseController.map[this.name] = (_a = _BaseController.map[this.name]) != null ? _a : {};
     _BaseController.map[this.name][key] = (_b = _BaseController.map[this.name][key]) != null ? _b : new this().createManType();
@@ -72,11 +71,19 @@ let BaseController = _BaseController;
 __publicField(BaseController, "map", {});
 __publicField(BaseController, "resetCallList", {});
 class Controller extends BaseController {
+  constructor() {
+    super(...arguments);
+    __publicField(this, "_type");
+  }
   createManType() {
     return { value: this };
   }
 }
 class Vue3Controller extends BaseController {
+  constructor() {
+    super(...arguments);
+    __publicField(this, "_type");
+  }
   createManType() {
     return ref(this);
   }
@@ -94,11 +101,12 @@ class BaseModel {
   static createModel(data, call) {
     return new this().createModel(data, call);
   }
-  createModel(data, call) {
-    const self = this.proxyData();
-    data && (self.data = data);
-    call && call(self);
-    return self;
+  createModel(data, call, newInst = false) {
+    const self = newInst ? new this.constructor() : this;
+    const selfProxyData = self.proxyData();
+    data && (selfProxyData.data = data);
+    call && call(selfProxyData);
+    return selfProxyData;
   }
   proxyData() {
     if (this.isProxyData) {
@@ -174,6 +182,15 @@ class RequestModel extends BaseModel {
     if (!this._req) {
       throw new Error(`\u8BF7\u6C42\u7C7B \u672A\u8BBE\u7F6E`);
     }
+    let base = this.url;
+    const url = this._req.get("url") || "";
+    if (!url && !base) {
+      throw new Error(`\u672A\u8BBE\u7F6E\u8BF7\u6C42\u5730\u5740`);
+    }
+    if (url.includes("/")) {
+      base = "";
+    }
+    this._req.set("url", trim(`${trim(base, "/")}/${trim(url, "/")}`, "/"));
     return this._req;
   }
   static setReq(req) {
@@ -185,13 +202,13 @@ class RequestModel extends BaseModel {
   }
   async reqOne(call) {
     return this.req.request().then((res) => {
-      return this.createModel(res, call);
+      return this.createModel(res, call, true);
     });
   }
   async reqOneOther(dataKey, call) {
     return this.req.request().then((res) => {
       const data = res[dataKey];
-      const model = this.createModel(data, call);
+      const model = this.createModel(data, call, true);
       return __spreadValues({ model }, omit(res, dataKey));
     });
   }
@@ -199,7 +216,7 @@ class RequestModel extends BaseModel {
     return this.req.request().then((res) => {
       let models = [];
       for (const da of res) {
-        models.push(this.createModel(res, call));
+        models.push(this.createModel(da, call, true));
       }
       return models;
     });
@@ -209,7 +226,7 @@ class RequestModel extends BaseModel {
       const dataList = res[dataKey];
       let models = [];
       for (const data of dataList) {
-        models.push(this.createModel(data, call));
+        models.push(this.createModel(data, call, true));
       }
       return __spreadValues({ models }, omit(res, dataKey));
     });
@@ -256,6 +273,9 @@ const _BaseRequest = class {
     this.config[key] = val;
     return this;
   }
+  get(key) {
+    return this.config[key];
+  }
   setConfig(config) {
     this.config = __spreadValues(__spreadValues({}, this.config), config);
     return this;
@@ -266,25 +286,25 @@ const _BaseRequest = class {
   setHasData(url, data = {}, params = {}, config = {}) {
     return this.set("url", url).set("data", data).set("params", params).setConfig(config);
   }
-  setGet(url, params = {}, config = {}) {
+  setGet(url = "", params = {}, config = {}) {
     return this.set("method", "get").setNoData(url, params, config);
   }
-  setDelete(url, params = {}, config = {}) {
+  setDelete(url = "", params = {}, config = {}) {
     return this.set("method", "delete").setNoData(url, params, config);
   }
-  setHead(url, params = {}, config = {}) {
+  setHead(url = "", params = {}, config = {}) {
     return this.set("method", "head").setNoData(url, params, config);
   }
-  setOptions(url, params = {}, config = {}) {
+  setOptions(url = "", params = {}, config = {}) {
     return this.set("method", "options").setNoData(url, params, config);
   }
-  setPost(url, data = {}, params = {}, config = {}) {
+  setPost(url = "", data = {}, params = {}, config = {}) {
     return this.set("method", "post").setHasData(url, data, params, config);
   }
-  setPut(url, data = {}, params = {}, config = {}) {
+  setPut(url = "", data = {}, params = {}, config = {}) {
     return this.set("method", "put").setHasData(url, data, params, config);
   }
-  setPatch(url, data = {}, params = {}, config = {}) {
+  setPatch(url = "", data = {}, params = {}, config = {}) {
     return this.set("method", "patch").setHasData(url, data, params, config);
   }
 };

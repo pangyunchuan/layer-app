@@ -9,10 +9,18 @@
 
 export default abstract class BaseModel<ModelData extends object = {}> {
     /**
-     * 获取类型,未使用
+     * 模型数据类型，只用于获取类型，无用途
      */
     _data?: ModelData;
 
+    // protected abstract table: string
+    //
+    // protected abstract getTable(): string
+
+    /**
+     * 模型数据
+     * @protected
+     */
     protected abstract data: ModelData;
 
     //是否已代理数据
@@ -25,8 +33,8 @@ export default abstract class BaseModel<ModelData extends object = {}> {
     // }
 
     /**
-     * 创建模型
-     * @param data
+     * 创建一个代理模型数据的模型实例
+     * @param data 模型数据
      * @param call
      */
     static createModel<M extends BaseModel, Da extends NonNullable<M['_data']> = NonNullable<M['_data']>>(
@@ -36,19 +44,24 @@ export default abstract class BaseModel<ModelData extends object = {}> {
     }
 
     /**
-     * 创建模型
+     * 创建一个代理模型数据的模型实例
      * @param data
      * @param call
+     * @param newInst  是否新建模型
      */
-    createModel<Da extends ModelData>(data?: Da, call?: (model: this & Da) => void): this & Da {
-        const self = this.proxyData<Da>()
-        data && (self.data = data);
-        call && call(self)
-        return self
+    createModel<Da extends ModelData>(data?: Da, call?: (model: this & Da) => void, newInst = false): this & Da {
+        const self = newInst ? <this>new (<any>this.constructor)() : this;
+        const selfProxyData = self.proxyData<Da>()
+        data && (selfProxyData.data = data);
+        call && call(selfProxyData)
+        return selfProxyData
     }
 
 
-    //代理 data 数据
+    /**
+     * 代理模型数据 data，让模型实例可以直接访问
+     * @protected
+     */
     protected proxyData<MD = ModelData>(): this & MD {
         if (this.isProxyData) {
             return <this & MD>this

@@ -1,8 +1,11 @@
 import {BaseLoading} from 'layer-app'
-import {ILoadingInstance, ILoadingOptions} from "element-plus/packages/components/loading/src/loading.type";
+import {LoadingOptions} from "element-plus/es/components/loading/src/types";
+import {ElLoadingService} from "element-plus/es/components/loading";
 import {ElLoading} from "element-plus";
 
-export default class ElPlusLoading extends BaseLoading<ILoadingOptions, ILoadingInstance> {
+type Inst = ReturnType<typeof ElLoadingService>
+
+export default class ElPlusLoading extends BaseLoading<LoadingOptions, Inst> {
     protected getIsFull(): boolean {
         if (!this.options.target) {
             return true;
@@ -11,17 +14,17 @@ export default class ElPlusLoading extends BaseLoading<ILoadingOptions, ILoading
         return (target instanceof HTMLElement ? target.nodeName : target) === "body";
     }
 
-    protected buildLoading(): ILoadingInstance {
+    protected buildLoading(): Inst {
         const inst = ElLoading.service(this.options);
         document.querySelector("body")?.classList.remove("el-loading-parent--relative");
         return inst;
     }
 
-    protected closeLoading(inst?: ILoadingInstance) {
+    protected closeLoading(inst?: Inst) {
         inst?.close();
     }
 
-    protected upText(text: string, inst?: ILoadingInstance) {
+    protected upText(text: string, inst?: Inst) {
         inst?.setText(text);
     }
 }
