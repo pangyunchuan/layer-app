@@ -11,10 +11,11 @@ export default abstract class BaseRequest<Config extends IRequestConfig = IReque
     };
     protected setCancel(): void;
     /**
-     * 取消给定标记的未完成的请求
+     * 取消给定标记的未完成的请求 , 默认 'default'
+     * 传入空字符串，该请求将无法取消
      * @param mark
      */
-    static cancelByMark(mark: string): void;
+    static cancelByMark(mark?: string): void;
     /**
      * 请求配置，继承 axios config
      * @protected

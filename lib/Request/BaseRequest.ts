@@ -26,10 +26,11 @@ export default abstract class BaseRequest<Config extends IRequestConfig = IReque
     }
 
     /**
-     * 取消给定标记的未完成的请求
+     * 取消给定标记的未完成的请求 , 默认 'default'
+     * 传入空字符串，该请求将无法取消
      * @param mark
      */
-    static cancelByMark(mark: string): void {
+    static cancelByMark(mark: string = 'default'): void {
         let {cancelMapByMark: map} = BaseRequest;
         //todo 必要请求，不能取消
         if (!map[mark]) {
