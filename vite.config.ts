@@ -34,7 +34,7 @@ export default defineConfig(({mode}) => {
             lib: {
                 entry: path.resolve(__dirname, 'lib/index.ts'),
                 name: 'MyLib',
-                fileName: (format) => `layer-app.${format}.js`
+                fileName: (format) => `dist.${format}.js`
             }
         }
     };

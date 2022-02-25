@@ -3,19 +3,20 @@
   "version": "1.0.1",
   "author": "pangyunchuan",
   "license": "MIT",
-  "main": "./dist/layer-app.umd.js",
-  "module": "./dist/layer-app.es.js",
+  "main": "./dist/dist.umd.js",
+  "module": "./dist/dist.es.js",
   "types": "types/lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pangyunchuan/layer-app"
   },
-  "description": "一套可选的，用于支持js/ts代码面向对象，mvc分层架构以及模块化组织代码的渐进式框架。",
+  "description": "用于支持ts/js代码面向对象，mvc分层架构以及模块化组织代码的渐进式框架。",
   "keywords": [
     "mvc",
     "oop",
     "layer",
     "app",
+    "layer-app",
     "orm",
     "mvvm",
     "api",
@@ -68,8 +69,8 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/layer-app.es.js",
-      "require": "./dist/layer-app.umd.js"
+      "import": "./dist/dist.es.js",
+      "require": "./dist/dist.umd.js"
     }
   }
 }
