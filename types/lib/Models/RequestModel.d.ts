@@ -1,6 +1,6 @@
 import BaseModel from "./BaseModel";
 import { instanceTypeByKey, reqKeys } from "../config/requestClassConfig";
-import LoadingRequest from "root/lib/Request/LoadingRequest";
+import LoadingRequest from "../Request/LoadingRequest";
 /**
  * 接口请求基础模型，用户定义接口对应的模型，并完成接口交互
  * 接口请求方式  Model.setReq(this.newReq().setGet('url','params')).reqOne()
@@ -8,17 +8,17 @@ import LoadingRequest from "root/lib/Request/LoadingRequest";
 export default abstract class RequestModel<ModelData extends object> extends BaseModel<ModelData> {
     /**
      * 该字段为  model.url 模型url，它将与 req.url(请求实例url) 配合，以确定请求地址
-     * model.url req.url 的 首尾 '/' 可要可不要，
-     * 但当 req.url  不包含 '/' 时    结果为  model.url + req.url，req.url  包含 '/' 时 结果 为 req.url
+     * 当 req.url  不包含 '/' 时 请求地址为  model.url + req.url；req.url  包含 '/' 时 请求地址为 req.url 自身
      * req.url 在 配置模型请求时使用 如: this.newReq().setGet('url');
      *
      * 非 restful 列子
      * model.url = /a/user/;req.url = list; =>  /a/user/list。
-     * req.url = /user; => /user。这对模型对应的某个接口地址不规则时有用。
+     * model.url = a/user;req.url = list; =>  a/user/list。
+     * req.url = /user; => /user。req.url = /user/list/; => /user/list。  这对模型对应的某个接口地址不规则时有用。
      *
      * restfull接口
      * model.url = /a/user;req.url = '';this.newReq().setGet(); => get /a/user。
-     * model.url = /a/user;req.url = '';this.newReq().setPost(); => post /a/user。
+     * model.url = /a/user/;req.url = '';this.newReq().setPost(); => post /a/user。
      * @protected
      */
     protected abstract url: string;

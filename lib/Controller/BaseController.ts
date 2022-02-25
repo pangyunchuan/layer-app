@@ -1,4 +1,3 @@
-type ManType = { value: BaseController }
 export default abstract class BaseController {
     /**
      * 控制器实例 map,按 classname 和 key 分类存放
@@ -6,20 +5,23 @@ export default abstract class BaseController {
      */
     private static map: Record<string, Record<string | number, any>> = {};
 
-
     /**
-     * 使用指定控制器
-     * @param key  视图模型标记 默认 default
+     * 控制器实例管理
+     * @param Controller  控制器class
+     * @param key 控制器标记 默认 default
+     * @protected
      */
-    static use<C extends BaseController>(
-        this: new() => C,
+    protected static baseUse<C extends typeof BaseController>(
+        Controller: C,
         key: string | number = "default"
-    ): NonNullable<C["_type"]> {
-        BaseController.map[this.name] = BaseController.map[this.name] ?? {};
-        BaseController.map[this.name][key] = BaseController.map[this.name][key] ?? new this().createManType();
-        const controller = <C>BaseController.map[this.name][key].value;
+    ) {
+        const name = Controller.name;
+        BaseController.map[name] = BaseController.map[name] ?? {};
+        BaseController.map[name][key] = BaseController.map[name][key]
+            ?? (<BaseController>new (<any>Controller)()).createRefInst();
+        const controller = <BaseController>BaseController.map[name][key].value;
         controller.key = key;
-        return <NonNullable<C["_type"]>>BaseController.map[this.name][key];
+        return BaseController.map[name][key];
     }
 
     /**
@@ -34,14 +36,9 @@ export default abstract class BaseController {
     protected isSetDestroy = false;
 
     /**
-     * 类型提示,无用
-     */
-    abstract _type?: ManType
-
-    /**
      * 创建响控制器管理对象,或响应式对象(如 vue3 ref)
      */
-    protected abstract createManType(): ManType
+    protected abstract createRefInst(): any
 
 
     private static resetCallList: Record<string, Record<string | number, (() => void)[]>> = {};
@@ -88,7 +85,7 @@ export default abstract class BaseController {
     destroy() {
         const name = this.constructor.name;
         const key = this.key;
-        const controllerMap = BaseController.map[name]
+        const controllerMap = BaseController.map[name];
         delete controllerMap[key];
         if (!Object.keys(controllerMap).length) {
             delete BaseController.map[name];

@@ -1,6 +1,3 @@
-declare type ManType = {
-    value: BaseController;
-};
 export default abstract class BaseController {
     /**
      * 控制器实例 map,按 classname 和 key 分类存放
@@ -8,10 +5,12 @@ export default abstract class BaseController {
      */
     private static map;
     /**
-     * 使用指定控制器
-     * @param key  视图模型标记 默认 default
+     * 控制器实例管理
+     * @param Controller  控制器class
+     * @param key 控制器标记 默认 default
+     * @protected
      */
-    static use<C extends BaseController>(this: new () => C, key?: string | number): NonNullable<C["_type"]>;
+    protected static baseUse<C extends typeof BaseController>(Controller: C, key?: string | number): any;
     /**
      * 模型 标记 key
      * @private
@@ -23,13 +22,9 @@ export default abstract class BaseController {
      */
     protected isSetDestroy: boolean;
     /**
-     * 类型提示,无用
-     */
-    abstract _type?: ManType;
-    /**
      * 创建响控制器管理对象,或响应式对象(如 vue3 ref)
      */
-    protected abstract createManType(): ManType;
+    protected abstract createRefInst(): any;
     private static resetCallList;
     /**
      * 设置 重置回调函数
@@ -48,4 +43,3 @@ export default abstract class BaseController {
      */
     destroy(): void;
 }
-export {};

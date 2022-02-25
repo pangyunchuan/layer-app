@@ -45,8 +45,8 @@ export default abstract class BaseModel<ModelData extends object = {}> {
 
     /**
      * 创建一个代理模型数据的模型实例
-     * @param data
-     * @param call
+     * @param data 模型数据
+     * @param call  模型建立后回调
      * @param newInst  是否新建模型
      */
     createModel<Da extends ModelData>(data?: Da, call?: (model: this & Da) => void, newInst = false): this & Da {

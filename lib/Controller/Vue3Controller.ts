@@ -1,15 +1,22 @@
-import {Ref} from "@vue/reactivity";
+import {Ref, UnwrapRef} from "@vue/reactivity";
 import {onBeforeUnmount, ref} from "vue";
 import BaseController from "./BaseController";
 
 export default class Vue3Controller extends BaseController {
-    _type?: Ref<this>
 
     /**
-     * 创建 ref 控制器变量
+     * 使用或新建指定控制器
+     * @param key
      */
-    protected createManType(): Ref<this> {
-        return <Ref<this>>ref(this)
+    static use<C extends BaseController>(
+        this: new () => C,
+        key: string | number = "default"
+    ): Ref<UnwrapRef<C>> {
+        return BaseController.baseUse(<any>this, key);
+    }
+
+    protected createRefInst(): Ref<UnwrapRef<this>> {
+        return ref(this)
     }
 
     /***

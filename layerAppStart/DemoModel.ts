@@ -144,8 +144,8 @@ const data: IDemo = {
 DemoModel.createModel().demoField;
 // dd.demoField
 (new DemoModel).createModel().demoField;
-const cc = DemoModel.createModel(data)
-cc.demoField
+// const cc = DemoModel.createModel(data)
+// cc.demoField
 
 //关系模型,不会从接口获取数据
 class RelationDataModel extends RequestModel<IRelationData> {

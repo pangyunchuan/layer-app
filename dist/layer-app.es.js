@@ -19,20 +19,21 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 import { ref, onBeforeUnmount } from "vue";
-import { trim, omit, debounce } from "lodash-es";
+import { trimEnd, trim, omit, debounce } from "lodash-es";
 import axios from "axios";
 const _BaseController = class {
   constructor() {
     __publicField(this, "key", "default");
     __publicField(this, "isSetDestroy", false);
   }
-  static use(key = "default") {
+  static baseUse(Controller2, key = "default") {
     var _a, _b;
-    _BaseController.map[this.name] = (_a = _BaseController.map[this.name]) != null ? _a : {};
-    _BaseController.map[this.name][key] = (_b = _BaseController.map[this.name][key]) != null ? _b : new this().createManType();
-    const controller = _BaseController.map[this.name][key].value;
+    const name = Controller2.name;
+    _BaseController.map[name] = (_a = _BaseController.map[name]) != null ? _a : {};
+    _BaseController.map[name][key] = (_b = _BaseController.map[name][key]) != null ? _b : new Controller2().createRefInst();
+    const controller = _BaseController.map[name][key].value;
     controller.key = key;
-    return _BaseController.map[this.name][key];
+    return _BaseController.map[name][key];
   }
   setResetCall(call) {
     var _a;
@@ -71,20 +72,18 @@ let BaseController = _BaseController;
 __publicField(BaseController, "map", {});
 __publicField(BaseController, "resetCallList", {});
 class Controller extends BaseController {
-  constructor() {
-    super(...arguments);
-    __publicField(this, "_type");
+  static use(key = "default") {
+    return BaseController.baseUse(this, key);
   }
-  createManType() {
+  createRefInst() {
     return { value: this };
   }
 }
 class Vue3Controller extends BaseController {
-  constructor() {
-    super(...arguments);
-    __publicField(this, "_type");
+  static use(key = "default") {
+    return BaseController.baseUse(this, key);
   }
-  createManType() {
+  createRefInst() {
     return ref(this);
   }
   destroyOnBeforeUnmount() {
@@ -187,10 +186,8 @@ class RequestModel extends BaseModel {
     if (!url && !base) {
       throw new Error(`\u672A\u8BBE\u7F6E\u8BF7\u6C42\u5730\u5740`);
     }
-    if (url.includes("/")) {
-      base = "";
-    }
-    this._req.set("url", trim(`${trim(base, "/")}/${trim(url, "/")}`, "/"));
+    const full = url.includes("/") ? url : `${trimEnd(base, "/")}/${trim(url, "/")}`;
+    this._req.set("url", full);
     return this._req;
   }
   static setReq(req) {

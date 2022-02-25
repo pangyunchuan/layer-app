@@ -63,7 +63,8 @@
     "@types/node": "^16.11.11",
     "@vitejs/plugin-vue": "^2.0.0",
     "typescript": "^4.5.2",
-    "vite": "^2.7.2"
+    "vite": "^2.7.2",
+    "vue-tsc": "^0.31.4"
   },
   "exports": {
     ".": {
