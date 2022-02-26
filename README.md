@@ -1,3 +1,19 @@
+## 使用layer-app搭建项目
+```shell
+# npm 6.x
+$ npm init layer-app <project-name> --template vite-vue3-setup-ts
+
+# npm 7+，需要加上额外的双短横线
+$ npm init layer-app <project-name> -- --template vite-vue3-setup-ts
+
+$ cd <project-name>
+$ npm install
+$ npm run dev
+
+#也可以 根据提示选择
+$ npm init layer-app
+```
+
 ## 项目介绍
 
 ```text
