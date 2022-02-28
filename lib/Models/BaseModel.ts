@@ -1,12 +1,3 @@
-//request cache (localStorage sessionStorage)
-//relation 关系?
-//属性代理不太能搞定啊
-// 先用代码 固定写
-// 本次实例 有多少字段需要
-// 查询参数只从实例转换？？
-//对外维持属性统一  查询参数，返回数据？？
-
-
 export default abstract class BaseModel<ModelData extends object = {}> {
     /**
      * 模型数据类型，只用于获取类型，无用途
@@ -23,6 +14,12 @@ export default abstract class BaseModel<ModelData extends object = {}> {
      */
     protected abstract data: ModelData;
 
+    /**
+     * 模型主键
+     * @protected
+     */
+    protected primaryKey:string = 'id';
+
     //是否已代理数据
     private isProxyData: boolean = false;
 
@@ -37,7 +34,7 @@ export default abstract class BaseModel<ModelData extends object = {}> {
      * @param data 模型数据
      * @param call
      */
-    static createModel<M extends BaseModel, Da extends NonNullable<M['_data']> = NonNullable<M['_data']>>(
+    static createModel<M extends BaseModel, Da extends Partial<NonNullable<M['_data']>> = NonNullable<M['_data']>>(
         this: new () => M, data?: Da, call?: (model: M & Da) => void
     ): M & Da {
         return new this().createModel(data, call)
@@ -49,10 +46,10 @@ export default abstract class BaseModel<ModelData extends object = {}> {
      * @param call  模型建立后回调
      * @param newInst  是否新建模型
      */
-    createModel<Da extends ModelData>(data?: Da, call?: (model: this & Da) => void, newInst = false): this & Da {
+    createModel<Da extends Partial<ModelData> = ModelData>(data?: Da, call?: (model: this & Da) => void, newInst = false): this & Da {
         const self = newInst ? <this>new (<any>this.constructor)() : this;
         const selfProxyData = self.proxyData<Da>()
-        data && (selfProxyData.data = data);
+        data && (selfProxyData.data = <any>data);
         call && call(selfProxyData)
         return selfProxyData
     }
@@ -62,7 +59,7 @@ export default abstract class BaseModel<ModelData extends object = {}> {
      * 代理模型数据 data，让模型实例可以直接访问
      * @protected
      */
-    protected proxyData<MD = ModelData>(): this & MD {
+    protected proxyData<MD extends Partial<ModelData> = ModelData>(): this & MD {
         if (this.isProxyData) {
             return <this & MD>this
         }

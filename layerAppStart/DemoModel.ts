@@ -1,9 +1,12 @@
 import {RequestModel} from "layer-app";
+import {pick} from "lodash-es";
 
+//模型数据类型
 interface IDemo {
-    id: string;
-    name: string;
+    demoId: string;
+    demoName: string;
     demoField: string,
+    collect: 0 | 1,//是否收藏
     modelAttr: string;
     relationData?: IRelationData
 }
@@ -21,16 +24,32 @@ export default class DemoModel extends RequestModel<IDemo> {
     //模型数据   data 中的数据,可通过 模型直接访问
     // 也是 (new DemoModel()).id; 结果为 id
     protected data: IDemo = {
-        id: "id", name: "", demoField: '11', modelAttr: 'data'
+        demoId: "id", demoName: "", collect: 0, demoField: '11', modelAttr: 'data'
     };
 
+    /**
+     * 模型主键
+     */
+    primaryKey = 'demoId'
 
-    protected url = ''
+
+    //url
+    protected url = '/demo-api/'
 
     get modelAttr() {
         // 模型自身属性名 与 data 中的属性名相同时,优先访问自身属性 也就是
         // (new DemoModel()).modelAttr  结果为  demoModel  而不是  data
         return 'demoModel'
+    }
+
+    //  collect 转文案
+    get collectText() {
+        return this.data.collect ? '已收藏' : '未收藏'
+    }
+
+    //是否收藏,当为  文本状态时有用
+    get isCollect() {
+        return !!this.data.collect
     }
 
     //关系模型 使用展示
@@ -47,105 +66,54 @@ export default class DemoModel extends RequestModel<IDemo> {
         }
     }
 
-
-    //单个模型请求
-    // 建议在模型 静态异步方法中完成接口请求
-    // 实例方法中,扩展模型内容。
-    //结果为 demoModel
-    static async find(id: string) {
-        // this.create()
-        const url = "/tt/234";
-        //reqOne 参数说明
-        // Model 模型类(未实例),类似接口第一个参数都是这
-        // call 回调函数,参数都是 模型实例,可用户完成一些模型实例的后置操作,所有类似操作都有这个参数
-        return this.setReq(this.newReq().setLoading().setGet('')).reqOne().then(rr => {
-            rr.test()
-        })
-        // return this.newReq().setLoading().setGet(url, {id}).reqOne(
-        //     this, (demoModel) => {
-        //         demoModel.init()
-        //     });
+    //单个模型
+    static async findOne() {
+        return this.setReq(this.newReq().setGet('detail', {id: 1})).reqOne()
     }
 
-    static async test() {
-        // this.setReq(this.newReq().setLoading().setGet('')).reqOne().then(rr=>{rr.demoField})
-        this.setReq(this.newReq()).reqOne().then(re => {
-
-        })
-        return this.setReq(this.newReq()).reqOne()
+    //多个模型
+    static async getList() {
+        return this.setReq(this.newReq().setGet('list', {ageLt: 1})).reqMany()
     }
 
-    async test() {
-        return DemoModel.setReq(this.newReq()).reqOneOther<{ tt: any, tt1: string }, 'tt'>
-        ('tt', (inst) => {
-            inst.test()
-        })
-        // return this.setReq(this.newReq()).reqOne((inst) => {
-        //     inst.init()
-        // })/*.then(rr => {
-        //     rr.test()
-        // })*/
+    //多个模型与其他参数
+    static async getListOther() {
+        return this.setReq(this.newReq().setGet('list', {ageLt: 1}))
+            .reqManyOther<{ data: any, total: number, nowPage: number }, 'data'>('data')
+    }
+
+    //单个模型与其他参数
+    static async findOneOther() {
+        return this.setReq(this.newReq().setGet('list', {ageLt: 1}))
+            .reqOneOther<{ data: any, t: string }, 'data'>('data')
+    }
+
+    //实例方法中
+    async getList1() {
+        //实例方法中,使用断言,标记this为当前类否自,call,或 结果类型提示有一定问题
+        return (<DemoModel>this).setReq(this.newReq().setGet('list', {ageLt: 1}))
+            .reqOneOther<{ data: any, t: string }, 'data'>('data')
     }
 
 
-    // 结果 为  { test:number,model:demoModel  }
-    static async findWithOther(
-        params: Required<Pick<IDemo, "id">>
-    ) {
-        const url = "/demoapi/tt/t1";
-        //reqOneOther 参数说明
-        // Model  介绍已有
-        // dataKey 模型数据所在key ,比如这里的 mdata  为模型数据的键名,这种情况必须指明
-        // call 介绍有
-        return this.setReq(this.newReq().setLoading().setGet(url, params))
-            .reqOneOther<{ mdata: object, test: number }, "mdata">('mdata')
-        // this.newReq().setLoading().setGet(url, params)
-        //     .reqOneOther<{ mdata: object, test: number }, "mdata", DemoModel>(this, "mdata");
+    //改变首次状态
+    async upCollect() {
+        return this.newReq().setPost('upCollect', {id: this.data.demoId, collect: this.data.collect});
     }
 
-    // 结果 为  demoModel[]  模型数组
-    static async get() {
-        const url = "/demoapi/tet1/1234";
-        //reqMany 与 reqOne 参数一致
-        return this.setReq(this.newReq().setLoading().setGet(url)).reqMany()
-        // return this.newReq().setLoading().setGet(url).reqMany(this);
+    async upName() {
+        // lodash  pick  会丢失字段类型提示，无用使用编辑器，统一修改字段
+        return this.newReq().setPost('upName', pick(this.data, ['id', 'demoName'])).request();
     }
 
-    ttttt() {
-        const url = "/demoapi/test/444";
-        return DemoModel.setReq(this.newReq().setLoading().setGet(url))
-            .reqManyOther<{ mdata: object, ss: string }, "mdata">('mdata')
-    }
-
-
-    // 结果 为  { ss:string,models:demoModel[]  }
-    static async getWithOther() {
-        const url = "/demoapi/test/444";
-        //reqManyOther 与 reqOneOther 参数一致
-        return this.setReq(this.newReq().setLoading().setGet(url))
-            .reqManyOther<{ mdata: object, ss: string }, "mdata">('mdata')
-        // return this.newReq().setLoading().setGet(url)
-        //     .reqManyOther<{ mdata: object, ss: string }, "mdata", DemoModel>(
-        //         this, "mdata");
+    //创建或修改数据
+    async save() {
+        //创建,并返回id
+        //save 一定要用使用 当前模型实例 的 setReq
+        // 静态方法或新建一个模型实例
+        return (<DemoModel>this).setReq(this.newReq().setPost('save', this.data)).reqSave()
     }
 }
-DemoModel.test().then(rr => {
-    rr.test()
-})
-new DemoModel().test().then(re => {
-    re.model.test()
-})
-DemoModel.getWithOther().then(r => {
-    r.models[0].test()
-})
-const data: IDemo = {
-    id: "id", name: "", demoField: '11', modelAttr: 'data'
-};
-DemoModel.createModel().demoField;
-// dd.demoField
-(new DemoModel).createModel().demoField;
-// const cc = DemoModel.createModel(data)
-// cc.demoField
 
 //关系模型,不会从接口获取数据
 class RelationDataModel extends RequestModel<IRelationData> {

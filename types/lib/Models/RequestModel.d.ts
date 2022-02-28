@@ -47,20 +47,20 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
      * @protected
      */
     protected static setReq<M extends RequestModel<{}>>(this: new () => M, req: LoadingRequest): M;
-    private setReq;
+    protected setReq(req: LoadingRequest): this;
     /**
      * 发起请求，返回单个模型实例
      * @param call
      * @protected
      */
-    protected reqOne<MD extends ModelData = ModelData>(call?: (inst: this & MD) => void): Promise<this & MD>;
+    protected reqOne<MD extends Partial<ModelData> = ModelData>(call?: (inst: this & MD) => void): Promise<this & MD>;
     /**
      * 发起请求，返回包含单个实例的对象，其中 model 字段为模型实例
      * @param dataKey  响应数据中 模型数据所在字段
      * @param call     模型实例创建后执行额回调函数
      * @protected
      */
-    protected reqOneOther<ApiData extends object, DK extends keyof ApiData, MD extends ModelData = ModelData, M extends RequestModel<{}> = this>(dataKey: DK, call?: (inst: M & MD) => void): Promise<{
+    protected reqOneOther<ApiData extends object, DK extends keyof ApiData, MD extends Partial<ModelData> = ModelData, M extends RequestModel<{}> = this>(dataKey: DK, call?: (inst: M & MD) => void): Promise<{
         model: (M & MD);
     } & Omit<ApiData, DK>>;
     /**
@@ -68,14 +68,20 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
      * @param call  每个模型实例创建后执行的回调函数
      * @protected
      */
-    protected reqMany<MD extends ModelData = ModelData>(call?: (inst: this & MD) => void): Promise<(this & MD)[]>;
+    protected reqMany<MD extends Partial<ModelData> = ModelData>(call?: (inst: this & MD) => void): Promise<(this & MD)[]>;
     /**
      * 发起请求并返回包含模型实例数组的对象,其中  models 字段为模型实例数组
      * @param dataKey  接口返回数据中，模型数据数组所在字段
      * @param call     每个模型实例创建后执行的回调函数
      * @protected
      */
-    protected reqManyOther<ApiData extends object, DK extends keyof ApiData, MD extends ModelData = ModelData, M extends RequestModel<{}> = this>(dataKey: DK, call?: (inst: M & MD) => void): Promise<{
+    protected reqManyOther<ApiData extends object, DK extends keyof ApiData, MD extends Partial<ModelData> = ModelData, M extends RequestModel<{}> = this>(dataKey: DK, call?: (inst: M & MD) => void): Promise<{
         models: (M & MD)[];
     } & Omit<ApiData, DK>>;
+    /**
+     * 发起请求并 保存数据（新建，修改）, 要求接口会返回接口id,此时会修改模型id字段为，若接口不返回id，将不做操作
+     * @param idField  主键字段  默认模型主键
+     * @protected
+     */
+    protected reqSave<MD extends Partial<ModelData> = ModelData>(idField?: string): Promise<string | number>;
 }

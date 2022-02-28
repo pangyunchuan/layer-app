@@ -55,6 +55,8 @@ mvc是基础的分层,在其中要遵循一些规则
 虽然每个功能都是可选使用的
 但在使用m时，必须要实现request，且需要完成下面将会提到的 layerAppStart/index.ts 中的配置。
 具体使用,查看 layerAppStart  中的示例文件
+
+所有的 d.ts文件中有属性的注释中有详细说明
 ```
 
 ## 安装和使用准备
@@ -143,13 +145,32 @@ export type requestClassMapType = typeof requestClassMap
 ```
 
 
-### 可选项
+
+########### 目录结构参考 以 vite + vue3 为例
 ```text
-vitePluginMockServe
-```
+index.html   vite 入口文件 
+vite.config.ts vite配置文件
+mock  模拟接口 文件
+buildConfig    vite打包配置拆分文件
+layerAppStart   layer-app 启动文件  
+public
+src  项目文件
+-- main.ts 入口文件
+-- App.vue vue根组件
+-- components  通用 ui 组件
+-- router  路由
+-- models 通用模型设置
+-- modules  模块目录 一个模块是一个业务功能集合, 模块中可含有路由,模型,页面,组件等任意模块相关内容,甚至可以含有子模块
+---- module1
+------ components  模块通用组件
+------ route.ts 模块路由
+------ controllers  模块控制器
+------ models  模块模型
+------ services 模块服务层,根据情况增加
+------ views 模块页面
+------ helpers 模块辅助函数
+-------- module1-1 子模块
+----- module2 模块2
 
-
-```text
-建议目录结构,待增加
-
+目录层级越高的,说明通用性越强
 ```
