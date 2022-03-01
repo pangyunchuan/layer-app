@@ -59,7 +59,7 @@ export default class DemoModel extends RequestModel<IDemo> {
     protected init() {
         const relationData = this.data.relationData
         if (relationData) {
-            this.relationOne = new RelationDataModel().createModel(relationData, (model) => {
+            this.relationOne =  RelationDataModel.createModel(relationData, (model) => {
                 // model.demoId
             })
             // this.relationOne.demoId
