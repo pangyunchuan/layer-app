@@ -108,6 +108,8 @@ export default abstract class BaseLoading<Options extends {}, InstType> {
                 fullInst.reqCount = 0;
                 fullInst.needWaitLoading = true;
                 this.closeLoading(fullInst.fullLoadingSingleInst);
+                //请求完成,清除实单例
+                delete BaseLoading._firstFullInstMapByClassName[this.constructor.name];
             }, 800);
         }
         return fullInst._waitClose;
