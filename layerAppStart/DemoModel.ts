@@ -19,7 +19,7 @@ interface IRelationData {
 }
 
 // 通过 reqOne reqMany等方法 得到模型会代理 data
-//手动实例的模型,需要自己代理,,   (new DemoModel).id 无法访问,  (new DemoModel).proxyData().id 可以访问
+// 应当使用 Model.createModel 方法创建模型实例, 使用new 未代理模型数据data
 export default class DemoModel extends RequestModel<IDemo> {
     //模型数据   data 中的数据,可通过 模型直接访问
     // 也是 (new DemoModel()).id; 结果为 id
@@ -96,14 +96,14 @@ export default class DemoModel extends RequestModel<IDemo> {
     }
 
 
-    //改变首次状态
+    //改变收藏状态
     async upCollect() {
-        return this.newReq().setPost('upCollect', {id: this.data.demoId, collect: this.data.collect});
+        return this.newReq().setPost(this.parseUrl('upCollect'), {id: this.data.demoId, collect: this.data.collect});
     }
 
     async upName() {
         // lodash  pick  会丢失字段类型提示，无用使用编辑器，统一修改字段
-        return this.newReq().setPost('upName', pick(this.data, ['id', 'demoName'])).request();
+        return this.newReq().setPost(this.parseUrl('upName'), pick(this.data, ['id', 'demoName'])).request();
     }
 
     //创建或修改数据

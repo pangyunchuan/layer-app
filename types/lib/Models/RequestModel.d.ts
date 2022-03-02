@@ -42,11 +42,22 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
     private _req?;
     private get req();
     /**
-     * 设置 请求实例，发起请求前必须设置
+     * 合并 model.url  req.url，当在模型中，只使用req时，可使用该函数
+     * @param end
+     * @protected
+     */
+    protected parseUrl(end?: string): string;
+    /**
+     * 设置 请求实例，发起请求前必须设置 会新建一个模型实例
      * @param req
      * @protected
      */
     protected static setReq<M extends RequestModel<{}>>(this: new () => M, req: LoadingRequest): M;
+    /**
+     * 设置 请求实例，发起请求前必须设置
+     * @param req
+     * @protected
+     */
     protected setReq(req: LoadingRequest): this;
     /**
      * 发起请求，返回单个模型实例
@@ -80,6 +91,7 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
     } & Omit<ApiData, DK>>;
     /**
      * 发起请求并 保存数据（新建，修改）, 要求接口会返回接口id,此时会修改模型id字段为，若接口不返回id，将不做操作
+     * 请注意设置 primaryKey以及接口是否支持
      * @param idField  主键字段  默认模型主键
      * @protected
      */

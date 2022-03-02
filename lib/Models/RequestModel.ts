@@ -2,7 +2,7 @@ import BaseModel from "./BaseModel";
 import getRequestMap, {instanceTypeByKey, reqKeys} from "../config/requestClassConfig";
 import {loadingConfig} from "../config/loadingClassConfig";
 import LoadingRequest from "../Request/LoadingRequest";
-import {omit, trim, trimEnd} from "lodash-es";
+import {omit, trimEnd} from "lodash-es";
 
 /**
  * 接口请求基础模型，用户定义接口对应的模型，并完成接口交互
@@ -66,15 +66,27 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
         if (!this._req) {
             throw new Error(`请求类 未设置`);
         }
-        let base = this.url;
+
         const url = this._req.get('url') || '';
-        if (!url && !base) {
+
+        this._req.set('url', this.parseUrl(url));
+        return this._req;
+    }
+
+    /**
+     * 合并 model.url  req.url，当在模型中，只使用req时，可使用该函数
+     * @param end
+     * @protected
+     */
+    protected parseUrl(end = "") {
+        const is = end.includes('/');
+        if (!end && !this.url) {
             throw new Error(`未设置请求地址`);
         }
+        let l = trimEnd(this.url, '/'), r = end;
+        let s = (l && r) ? "/" : ""
 
-        const full = url.includes('/') ? url : `${trimEnd(base, '/')}/${trim(url, '/')}`;
-        this._req.set('url', full);
-        return this._req;
+        return is ? r : `${l}${s}${r}`
     }
 
     /**
@@ -170,6 +182,7 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
 
     /**
      * 发起请求并 保存数据（新建，修改）, 要求接口会返回接口id,此时会修改模型id字段为，若接口不返回id，将不做操作
+     * 请注意设置 primaryKey以及接口是否支持
      * @param idField  主键字段  默认模型主键
      * @protected
      */

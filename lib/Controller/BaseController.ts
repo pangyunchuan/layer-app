@@ -85,10 +85,19 @@ export default abstract class BaseController {
     destroy() {
         const name = this.constructor.name;
         const key = this.key;
-        const controllerMap = BaseController.map[name];
+
+        //清除实例管理
+        const controllerMap =  BaseController.map[name] ?? {};
         delete controllerMap[key];
         if (!Object.keys(controllerMap).length) {
             delete BaseController.map[name];
+        }
+
+        //清除 call list
+        const controllerResetCallMap = BaseController.resetCallList[name] ?? {};
+        delete controllerResetCallMap[key];
+        if (!Object.keys(controllerResetCallMap).length) {
+            delete BaseController.resetCallList[name];
         }
     }
 }
