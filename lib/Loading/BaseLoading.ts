@@ -14,8 +14,6 @@ export default abstract class BaseLoading<Options extends {}, InstType> {
     private needWaitLoading = true;
     private reqIngNum = 0;
     private reqCount = 0;
-    //全屏Loading单例
-    private fullLoadingSingleInst: InstType | undefined;
 
     private get isFull() {
         return this.getIsFull()
@@ -81,7 +79,7 @@ export default abstract class BaseLoading<Options extends {}, InstType> {
             fullInst.needWaitLoading = false;
         }
 
-        this.upText(this.getText());
+        fullInst.upText(fullInst.getText(), fullInst.loadingInst);
         fullInst.waitClose.cancel();
     }
 
@@ -94,7 +92,7 @@ export default abstract class BaseLoading<Options extends {}, InstType> {
         const fullInst = this.fullInst;
         if (!fullInst._waitLoading) {
             fullInst._waitLoading = debounce(() => {
-                fullInst.fullLoadingSingleInst = this.buildLoading();
+                fullInst.loadingInst = fullInst.buildLoading();
             }, 1000);
         }
         return fullInst._waitLoading;
@@ -104,10 +102,12 @@ export default abstract class BaseLoading<Options extends {}, InstType> {
         const fullInst = this.fullInst;
         if (!fullInst._waitClose) {
             fullInst._waitClose = debounce(() => {
+                fullInst.waitLoading.cancel();
                 fullInst.reqIngNum = 0;
                 fullInst.reqCount = 0;
                 fullInst.needWaitLoading = true;
-                this.closeLoading(fullInst.fullLoadingSingleInst);
+                this.closeLoading(fullInst.loadingInst);
+                fullInst.loadingInst = undefined;
                 //请求完成,清除实单例
                 delete BaseLoading._firstFullInstMapByClassName[this.constructor.name];
             }, 800);
@@ -119,9 +119,8 @@ export default abstract class BaseLoading<Options extends {}, InstType> {
     private fullClose() {
         const fullInst = this.fullInst;
         fullInst.reqIngNum--;
-        this.upText(this.getText());
+        fullInst.upText(fullInst.getText(), fullInst.loadingInst);
         if (fullInst.reqIngNum <= 0) {
-            fullInst.waitLoading.cancel();
             fullInst.waitClose();
         }
     }
