@@ -8,7 +8,6 @@ export default abstract class BaseLoading<Options extends {}, InstType> {
     private needWaitLoading;
     private reqIngNum;
     private reqCount;
-    private fullLoadingSingleInst;
     private get isFull();
     protected loadingInst: InstType | undefined;
     private get classname();

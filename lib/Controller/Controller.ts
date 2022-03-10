@@ -1,6 +1,4 @@
 import BaseController from "./BaseController";
-import {Ref} from "@vue/reactivity";
-import {UnwrapRef} from "vue";
 
 type NormalManController<C extends BaseController> = { value: C }
 export default class Controller extends BaseController {

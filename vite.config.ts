@@ -18,16 +18,13 @@ export default defineConfig(({mode}) => {
         build: {
             rollupOptions: {
                 // 确保外部化处理那些你不想打包进库的依赖
-                external: ['element-plus', 'vant', 'lodash-es', 'axios', 'vue', 'mockjs'],
+                external: ['lodash-es', 'axios', 'vue'],
                 output: {
                     // // // 在 UMD 构建模式下为这些外部化的依赖提供一个全局变量
                     globals: {
-                        'element-plus': 'element-plus',
-                        'vant': 'vant',
                         'lodash-es': 'lodash-es',
                         'axios': 'axios',
-                        'vue': 'vue',
-                        'mockjs': 'mockjs'
+                        'vue': 'vue'
                     }
                 },
             },
