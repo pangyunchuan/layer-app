@@ -93,7 +93,7 @@ export default abstract class BaseLoading<Options extends {}, InstType> {
         if (!fullInst._waitLoading) {
             fullInst._waitLoading = debounce(() => {
                 fullInst.loadingInst = fullInst.buildLoading();
-            }, 1000);
+            }, 1500);
         }
         return fullInst._waitLoading;
     }
@@ -110,7 +110,7 @@ export default abstract class BaseLoading<Options extends {}, InstType> {
                 fullInst.loadingInst = undefined;
                 //请求完成,清除实单例
                 delete BaseLoading._firstFullInstMapByClassName[this.constructor.name];
-            }, 800);
+            }, 1000);
         }
         return fullInst._waitClose;
     }

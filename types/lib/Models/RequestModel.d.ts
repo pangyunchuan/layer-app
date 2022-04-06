@@ -1,6 +1,7 @@
 import BaseModel from "./BaseModel";
 import { instanceTypeByKey, reqKeys } from "../config/requestClassConfig";
 import LoadingRequest from "../Request/LoadingRequest";
+import BaseRequest from "../Request/BaseRequest";
 /**
  * 接口请求基础模型，用户定义接口对应的模型，并完成接口交互
  * 接口请求方式  Model.setReq(this.newReq().setGet('url','params')).reqOne()
@@ -21,7 +22,8 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
      * model.url = /a/user/;req.url = '';this.newReq().setPost(); => post /a/user。
      * @protected
      */
-    protected abstract url: string;
+    protected static url: string;
+    protected get url(): string;
     /**
      * 是否 默认启用loading，初始以配置值，单个模型可覆盖该值，手动设置loading时，该字段无效
      * @protected
@@ -44,9 +46,18 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
     /**
      * 合并 model.url  req.url，当在模型中，只使用req时，可使用该函数
      * @param end
+     * @param prev  前缀
      * @protected
      */
-    protected parseUrl(end?: string): string;
+    protected parseUrl(end?: string, prev?: string): string;
+    /**
+     * 合并 model.url  req.url，当在模型中，只使用req时，可使用该函数
+     * @param end
+     * @param prev
+     * @protected
+     */
+    protected static parseUrl(end?: string, prev?: string): string;
+    private static parseUrlHandle;
     /**
      * 设置 请求实例，发起请求前必须设置 会新建一个模型实例
      * @param req
@@ -58,20 +69,18 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
      * @param req
      * @protected
      */
-    protected setReq(req: LoadingRequest): this;
+    protected setReq(req: LoadingRequest | BaseRequest): this;
     /**
      * 发起请求，返回单个模型实例
-     * @param call
      * @protected
      */
-    protected reqOne<MD extends Partial<ModelData> = ModelData>(call?: (inst: this & MD) => void): Promise<this & MD>;
+    protected reqOne<MD extends Partial<ModelData> = ModelData>(): Promise<this & MD>;
     /**
      * 发起请求，返回包含单个实例的对象，其中 model 字段为模型实例
      * @param dataKey  响应数据中 模型数据所在字段
-     * @param call     模型实例创建后执行额回调函数
      * @protected
      */
-    protected reqOneOther<ApiData extends object, DK extends keyof ApiData, MD extends Partial<ModelData> = ModelData, M extends RequestModel<{}> = this>(dataKey: DK, call?: (inst: M & MD) => void): Promise<{
+    protected reqOneOther<ApiData extends object, DK extends keyof ApiData, MD extends Partial<ModelData> = ModelData, M extends RequestModel<{}> = this>(dataKey: DK): Promise<{
         model: (M & MD);
     } & Omit<ApiData, DK>>;
     /**

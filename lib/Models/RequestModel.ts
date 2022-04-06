@@ -3,6 +3,7 @@ import getRequestMap, {instanceTypeByKey, reqKeys} from "../config/requestClassC
 import {loadingConfig} from "../config/loadingClassConfig";
 import LoadingRequest from "../Request/LoadingRequest";
 import {omit, trimEnd} from "lodash-es";
+import BaseRequest from "../Request/BaseRequest";
 
 /**
  * 接口请求基础模型，用户定义接口对应的模型，并完成接口交互
@@ -24,10 +25,14 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
      * model.url = /a/user/;req.url = '';this.newReq().setPost(); => post /a/user。
      * @protected
      */
-    protected abstract url: string
+    protected static url = ''
+    protected get url() {
+        return (<typeof RequestModel>this.constructor).url
+    }
 
     /**
      * 是否 默认启用loading，初始以配置值，单个模型可覆盖该值，手动设置loading时，该字段无效
+     * 为true 时,,请求类 必须为 LoadingRequest 后代
      * @protected
      */
     protected useLoading: boolean = loadingConfig.use;
@@ -60,9 +65,9 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
     }
 
 
-    private _req?: LoadingRequest;
+    private _req?: LoadingRequest | BaseRequest;
 
-    private get req(): LoadingRequest {
+    private get req(): LoadingRequest | BaseRequest {
         if (!this._req) {
             throw new Error(`请求类 未设置`);
         }
@@ -76,18 +81,34 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
     /**
      * 合并 model.url  req.url，当在模型中，只使用req时，可使用该函数
      * @param end
+     * @param prev  前缀
      * @protected
      */
-    protected parseUrl(end = "") {
+    protected parseUrl(end = "", prev = this.url) {
+        return (<typeof RequestModel>this.constructor).parseUrlHandle(end, prev)
+    }
+
+    /**
+     * 合并 model.url  req.url，当在模型中，只使用req时，可使用该函数
+     * @param end
+     * @param prev
+     * @protected
+     */
+    protected static parseUrl(end = "", prev = this.url) {
+        return this.parseUrlHandle(end, prev);
+    }
+
+    private static parseUrlHandle(end = "", prev = '') {
         const is = end.includes('/');
-        if (!end && !this.url) {
+        if (!end && !prev) {
             throw new Error(`未设置请求地址`);
         }
-        let l = trimEnd(this.url, '/'), r = end;
+        let l = trimEnd(prev, '/'), r = end;
         let s = (l && r) ? "/" : ""
 
         return is ? r : `${l}${s}${r}`
     }
+
 
     /**
      * 设置 请求实例，发起请求前必须设置 会新建一个模型实例
@@ -103,40 +124,39 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
      * @param req
      * @protected
      */
-    protected setReq(req: LoadingRequest): this {
-        this._req = req.setUseLoading(this.useLoading);
+    protected setReq(req: LoadingRequest | BaseRequest): this {
+        if ('setUseLoading' in req) {
+            req.setUseLoading(this.useLoading);
+        }
+        this._req = req
+
         return this
     }
 
     /**
      * 发起请求，返回单个模型实例
-     * @param call
      * @protected
      */
-    protected async reqOne<MD extends Partial<ModelData> = ModelData>(
-        call?: (inst: this & MD) => void
-    ): Promise<this & MD> {
+    protected async reqOne<MD extends Partial<ModelData> = ModelData>(): Promise<this & MD> {
         return this.req.request().then(res => {
-            return this.createModel<MD>(res, call, true)
+            return this.createModel<MD>(res, undefined, true)
         });
     }
 
     /**
      * 发起请求，返回包含单个实例的对象，其中 model 字段为模型实例
      * @param dataKey  响应数据中 模型数据所在字段
-     * @param call     模型实例创建后执行额回调函数
      * @protected
      */
     protected async reqOneOther<ApiData extends object,
         DK extends keyof ApiData,
         MD extends Partial<ModelData> = ModelData,
         M extends RequestModel<{}> = this>(
-        dataKey: DK,
-        call?: (inst: M & MD) => void
+        dataKey: DK
     ): Promise<{ model: (M & MD) } & Omit<ApiData, DK>> {
         return this.req.request().then(res => {
             const data = res[dataKey];
-            const model: M & MD = this.createModel(data, call, true);
+            const model: M & MD = this.createModel(data, undefined, true);
             return {model, ...omit(res, dataKey)};
         });
     }
@@ -192,8 +212,8 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
         return this.req.request().then(res => {
             if (res && res[idField]) {
                 (<any>this.data)[idField] = res[idField]
-                return res[idField]
             }
+            return res;
         });
     }
 }

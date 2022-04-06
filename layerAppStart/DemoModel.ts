@@ -1,6 +1,41 @@
 import {RequestModel} from "layer-app";
 import {pick} from "lodash-es";
 
+interface IDemoBase {
+    t: string,
+    state: string
+}
+
+//模型基础配置说明
+class DemoBaseModel extends RequestModel<IDemoBase> {
+    //模型数据,必要
+    protected data: IDemoBase = {t: '', state: ''}
+    //模型 url 前缀 发起请求时需要使用,必要
+    protected static url = '/23/'
+    //模型主键 默认id 可选  使用模型实例方法 reqSave 时,更新模型实例的id值,单要求接口返回格式为 {[primaryKey]:v}
+    protected primaryKey = 't'
+
+    //模型请求默认是否需要使用 loading, 为true,且为 LoadingRequest 时才有用
+    // protected useLoading = false
+
+    //静态方法通常用于获取模型实例
+    static async getD() {
+        return this.setReq(this.newReq().setGet('11')).reqOne()
+    }
+
+    //实例方法,主要用于更新修改模型数据
+    async changeState() {
+        return this.newReq().setPost(this.parseUrl('savedd'), {state: this.data.state}).request()
+    }
+
+    //使用reqSave 保存,数据,并变更模型主键id
+    async save() {
+        return this.setReq(this.newReq().setPost('save', this.data)).reqSave()
+    }
+
+}
+
+
 //模型数据类型
 interface IDemo {
     demoId: string;
@@ -34,7 +69,7 @@ export default class DemoModel extends RequestModel<IDemo> {
 
 
     //url
-    protected url = '/demo-api/'
+    protected static url = '/demo-api/'
 
     get modelAttr() {
         // 模型自身属性名 与 data 中的属性名相同时,优先访问自身属性 也就是
@@ -53,22 +88,26 @@ export default class DemoModel extends RequestModel<IDemo> {
     }
 
     //关系模型 使用展示
-    relationOne: RelationDataModel & IRelationData | undefined
+    relationOne: RelationDataModel & IRelationData = RelationDataModel.createModel()
 
-    //初始化, 展示关系模型如何实例
-    protected init() {
-        const relationData = this.data.relationData
-        if (relationData) {
-            this.relationOne =  RelationDataModel.createModel(relationData, (model) => {
-                // model.demoId
-            })
-            // this.relationOne.demoId
-        }
+
+    protected async init2() {
+        return this.relationOne.findOne(this.data.demoId).then(relation => {
+            this.relationOne = relation
+            return this;
+        })
     }
 
     //单个模型
     static async findOne() {
         return this.setReq(this.newReq().setGet('detail', {id: 1})).reqOne()
+    }
+
+    //单个模型,关联2
+    static async findOne2() {
+        return this.setReq(this.newReq().setGet('detail', {id: 1})).reqOne().then(r => {
+            return r.init2()
+        })
     }
 
     //多个模型
@@ -117,8 +156,12 @@ export default class DemoModel extends RequestModel<IDemo> {
 
 //关系模型,不会从接口获取数据
 class RelationDataModel extends RequestModel<IRelationData> {
-    protected url = ''
+    protected static url = '/demo-api/relation/'
     protected data: IRelationData = {
         demoId: '', id: '', name: ''
+    }
+
+    async findOne(demoId: string) {
+        return this.setReq(this.newReq().setGet('detail', {demoId})).reqOne()
     }
 }
