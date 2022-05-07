@@ -1,7 +1,9 @@
-import {merge} from "lodash-es";
-
 export default class Page {
     reset() {
-        merge(this, new (<any>this.constructor)());
+        const newThis = new (<any>this.constructor)()
+        for (const newThisKey in newThis) {
+            (<any>this)[newThisKey] = (<any>newThis)[newThisKey]
+        }
+        Object.assign(this, newThis)
     }
 }

@@ -26,6 +26,7 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
     protected get url(): string;
     /**
      * 是否 默认启用loading，初始以配置值，单个模型可覆盖该值，手动设置loading时，该字段无效
+     * 为true 时,,请求类 必须为 LoadingRequest 后代
      * @protected
      */
     protected useLoading: boolean;
