@@ -1,6 +1,6 @@
 {
   "name": "layer-app",
-  "version": "1.0.81",
+  "version": "1.0.82",
   "author": "pangyunchuan",
   "license": "MIT",
   "main": "./dist/dist.umd.js",

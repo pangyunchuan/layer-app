@@ -1,5 +1,6 @@
 import {RequestModel} from "layer-app";
 import {pick} from "lodash-es";
+import {reqKeys} from "layer-app/types/lib/config/requestClassConfig";
 
 interface IDemoBase {
     t: string,
@@ -12,7 +13,10 @@ class DemoBaseModel extends RequestModel<IDemoBase> {
     data: IDemoBase = {t: '', state: ''}
     //模型 url 前缀 发起请求时需要使用,必要
     protected static url = '/23/'
-    //模型主键 默认id 可选  使用模型实例方法 reqSave 时,更新模型实例的id值,单要求接口返回格式为 {[primaryKey]:v}
+    //模型默认使用的 请求类型,需要变更时使用
+    protected static reqType:reqKeys = 'default'
+
+    //没啥用 模型主键 默认id 可选  使用模型实例方法 reqSave 时,更新模型实例的id值,单要求接口返回格式为 {[primaryKey]:v}
     protected primaryKey = 't'
 
     //模型请求默认是否需要使用 loading, 为true,且为 LoadingRequest 时才有用
