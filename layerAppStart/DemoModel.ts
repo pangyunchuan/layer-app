@@ -9,7 +9,7 @@ interface IDemoBase {
 //模型基础配置说明
 class DemoBaseModel extends RequestModel<IDemoBase> {
     //模型数据,必要
-    protected data: IDemoBase = {t: '', state: ''}
+    data: IDemoBase = {t: '', state: ''}
     //模型 url 前缀 发起请求时需要使用,必要
     protected static url = '/23/'
     //模型主键 默认id 可选  使用模型实例方法 reqSave 时,更新模型实例的id值,单要求接口返回格式为 {[primaryKey]:v}
@@ -35,6 +35,8 @@ class DemoBaseModel extends RequestModel<IDemoBase> {
 
 }
 
+// let c = DemoBaseModel.createModel()
+// c.data.state
 
 //模型数据类型
 interface IDemo {
@@ -58,7 +60,7 @@ interface IRelationData {
 export default class DemoModel extends RequestModel<IDemo> {
     //模型数据   data 中的数据,可通过 模型直接访问
     // 也是 (new DemoModel()).id; 结果为 id
-    protected data: IDemo = {
+     data: IDemo = {
         demoId: "id", demoName: "", collect: 0, demoField: '11', modelAttr: 'data'
     };
 
@@ -88,7 +90,7 @@ export default class DemoModel extends RequestModel<IDemo> {
     }
 
     //关系模型 使用展示
-    relationOne: RelationDataModel & IRelationData = RelationDataModel.createModel()
+    relationOne: RelationDataModel = RelationDataModel.create()
 
 
     protected async init2() {
@@ -118,20 +120,20 @@ export default class DemoModel extends RequestModel<IDemo> {
     //多个模型与其他参数
     static async getListOther() {
         return this.setReq(this.newReq().setGet('list', {ageLt: 1}))
-            .reqManyOther<{ data: any, total: number, nowPage: number }, 'data'>('data')
+            .reqManyOther<{  total: number, nowPage: number }>('data')
     }
 
     //单个模型与其他参数
     static async findOneOther() {
         return this.setReq(this.newReq().setGet('list', {ageLt: 1}))
-            .reqOneOther<{ data: any, t: string }, 'data'>('data')
+            .reqOneOther<{  t: string }>('data')
     }
 
     //实例方法中
     async getList1() {
         //实例方法中,使用断言,标记this为当前类否自,call,或 结果类型提示有一定问题
         return (<DemoModel>this).setReq(this.newReq().setGet('list', {ageLt: 1}))
-            .reqOneOther<{ data: any, t: string }, 'data'>('data')
+            .reqOneOther<{  t: string }>('data')
     }
 
 
@@ -157,7 +159,7 @@ export default class DemoModel extends RequestModel<IDemo> {
 //关系模型,不会从接口获取数据
 class RelationDataModel extends RequestModel<IRelationData> {
     protected static url = '/demo-api/relation/'
-    protected data: IRelationData = {
+    data: IRelationData = {
         demoId: '', id: '', name: ''
     }
 

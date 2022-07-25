@@ -2,14 +2,14 @@ import BaseModel from "./BaseModel";
 import getRequestMap, {instanceTypeByKey, reqKeys} from "../config/requestClassConfig";
 import {loadingConfig} from "../config/loadingClassConfig";
 import LoadingRequest from "../Request/LoadingRequest";
-import {omit, trimEnd} from "lodash-es";
+import {trimEnd} from "lodash-es";
 import BaseRequest from "../Request/BaseRequest";
 
 /**
  * 接口请求基础模型，用户定义接口对应的模型，并完成接口交互
  * 接口请求方式  Model.setReq(this.newReq().setGet('url','params')).reqOne()
  */
-export default abstract class RequestModel<ModelData extends object> extends BaseModel<ModelData> {
+export default abstract class RequestModel<RD extends object = {}> extends BaseModel<RD> {
     /**
      * 该字段为  model.url 模型url，它将与 req.url(请求实例url) 配合，以确定请求地址
      * 当 req.url  不包含 '/' 时 请求地址为  model.url + req.url；req.url  包含 '/' 时 请求地址为 req.url 自身
@@ -37,13 +37,23 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
      */
     protected useLoading: boolean = loadingConfig.use;
 
+
+    /**
+     * 模型使用的请求类
+     * @protected
+     */
+    protected static reqType: reqKeys = 'default'
+    protected get reqType() {
+        return (<typeof RequestModel>this.constructor).reqType
+    }
+
     /**
      * 新建请求实例
      * @param reqType
      * @protected
      */
-    protected static newReq<Child extends RequestModel<any>, ReqType extends reqKeys = "default">(
-        reqType: ReqType = <ReqType>"default"
+    protected static newReq<Child extends RequestModel, ReqType extends reqKeys = "default">(
+        reqType: ReqType = <ReqType>this.reqType
     ): instanceTypeByKey[ReqType] {
         const reqMap = getRequestMap()
         const reqClass = new reqMap[reqType];
@@ -53,13 +63,8 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
         return <instanceTypeByKey[ReqType]>reqClass;
     }
 
-    /**
-     * 新建请求实例
-     * @param reqType
-     * @protected
-     */
     protected newReq<ReqType extends reqKeys = "default">(
-        reqType: ReqType = <ReqType>"default"
+        reqType: ReqType = <ReqType>this.reqType
     ): instanceTypeByKey[ReqType] {
         return RequestModel.newReq(reqType);
     }
@@ -76,6 +81,10 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
 
         this._req.set('url', this.parseUrl(url));
         return this._req;
+    }
+
+    private set req(r) {
+        this._req = r;
     }
 
     /**
@@ -115,7 +124,7 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
      * @param req
      * @protected
      */
-    protected static setReq<M extends RequestModel<{}>>(this: new() => M, req: LoadingRequest): M {
+    protected static setReq<M extends RequestModel>(this: new() => M, req: LoadingRequest): M {
         return new this().setReq(req)
     }
 
@@ -128,7 +137,7 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
         if ('setUseLoading' in req) {
             req.setUseLoading(this.useLoading);
         }
-        this._req = req
+        this.req = req
 
         return this
     }
@@ -137,9 +146,9 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
      * 发起请求，返回单个模型实例
      * @protected
      */
-    protected async reqOne<MD extends Partial<ModelData> = ModelData>(): Promise<this & MD> {
+    protected async reqOne(): Promise<this> {
         return this.req.request().then(res => {
-            return this.createModel<MD>(res, undefined, true)
+            return this.create(res, false)
         });
     }
 
@@ -148,29 +157,26 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
      * @param dataKey  响应数据中 模型数据所在字段
      * @protected
      */
-    protected async reqOneOther<ApiData extends object,
-        DK extends keyof ApiData,
-        MD extends Partial<ModelData> = ModelData,
-        M extends RequestModel<{}> = this>(
-        dataKey: DK
-    ): Promise<{ model: (M & MD) } & Omit<ApiData, DK>> {
+    protected async reqOneOther<OtherData extends object,
+        M extends RequestModel = this>(
+        dataKey: string
+    ): Promise<{ model: M } & OtherData> {
         return this.req.request().then(res => {
             const data = res[dataKey];
-            const model: M & MD = this.createModel(data, undefined, true);
-            return {model, ...omit(res, dataKey)};
+            const model = <M><any>this.create(data, false);
+            return {model, ...res};
         });
     }
 
     /**
      * 发起请求，返回模型实例组成的数组
-     * @param call  每个模型实例创建后执行的回调函数
      * @protected
      */
-    protected async reqMany<MD extends Partial<ModelData> = ModelData>(call?: (inst: this & MD) => void): Promise<(this & MD)[]> {
+    protected async reqMany(): Promise<this[]> {
         return this.req.request().then(res => {
             let models = [];
             for (const da of res) {
-                models.push(this.createModel<MD>(da, <any>call, true));
+                models.push(this.create(da));
             }
             return models;
         });
@@ -179,23 +185,19 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
     /**
      * 发起请求并返回包含模型实例数组的对象,其中  models 字段为模型实例数组
      * @param dataKey  接口返回数据中，模型数据数组所在字段
-     * @param call     每个模型实例创建后执行的回调函数
      * @protected
      */
-    protected async reqManyOther<ApiData extends object,
-        DK extends keyof ApiData,
-        MD extends Partial<ModelData> = ModelData,
-        M extends RequestModel<{}> = this>(
-        dataKey: DK,
-        call?: (inst: M & MD) => void
-    ): Promise<{ models: (M & MD)[] } & Omit<ApiData, DK>> {
+    protected async reqManyOther<OtherData extends object,
+        M extends RequestModel = this>(
+        dataKey: string
+    ): Promise<{ models: M[] } & OtherData> {
         return this.req.request().then(res => {
             const dataList = res[dataKey];
-            let models: (M & MD)[] = [];
+            let models: M[] = [];
             for (const data of dataList) {
-                models.push(this.createModel(data, call, true));
+                models.push(<any>this.create(data));
             }
-            return {models, ...omit(res, dataKey)};
+            return {models, ...res};
         });
     }
 
@@ -203,17 +205,11 @@ export default abstract class RequestModel<ModelData extends object> extends Bas
     /**
      * 发起请求并 保存数据（新建，修改）, 要求接口会返回接口id,此时会修改模型id字段为，若接口不返回id，将不做操作
      * 请注意设置 primaryKey以及接口是否支持
-     * @param idField  主键字段  默认模型主键
      * @protected
      */
-    protected async reqSave<MD extends Partial<ModelData> = ModelData>(
-        idField: string = this.primaryKey
-    ): Promise<string | number> {
+    protected async reqSave(): Promise<this> {
         return this.req.request().then(res => {
-            if (res && res[idField]) {
-                (<any>this.data)[idField] = res[idField]
-            }
-            return res;
+            return this.create(res, false);
         });
     }
 }
