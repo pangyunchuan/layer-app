@@ -1,6 +1,6 @@
 {
-  "name": "layer-app",
-  "version": "1.0.83",
+  "name": "http-api-orm",
+  "version": "1.0.0",
   "author": "pangyunchuan",
   "license": "MIT",
   "main": "./dist/dist.umd.js",
@@ -10,46 +10,33 @@
     "type": "git",
     "url": "git+https://github.com/pangyunchuan/layer-app"
   },
-  "description": "用于支持ts/js代码面向对象，mvc分层架构以及模块化组织代码的渐进式框架。",
+  "description": "A api orm implemented by ts 。一个ts的api-orm。",
   "keywords": [
-    "mvc",
     "oop",
-    "layer",
-    "app",
-    "layer-app",
     "orm",
-    "mvvm",
     "api",
+    "axios",
     "promise",
     "ajax"
   ],
   "files": [
-    "bin",
     "dist",
-    "layerAppStart",
     "types/lib"
   ],
-  "bin": {
-    "createLayerAppStart": "bin/init.js"
-  },
   "scripts": {
     "build": "vite build"
   },
   "peerDependencies": {
-    "axios": ">0.0.0",
-    "vue": ">3.0.0",
+    "axios": ">0.22.0",
     "lodash-es": ">4.0.0"
   },
   "peerDependenciesMeta": {
-
   },
   "devDependencies": {
-    "vant": ">3.0.0",
-    "element-plus": ">2.0.0",
     "@types/lodash-es": ">4.0.0",
     "@types/node": ">16.0.0",
     "typescript": ">4.0.0",
-    "vite": ">2.0.0"
+    "vite": ">4.0.0"
   },
   "exports": {
     ".": {
