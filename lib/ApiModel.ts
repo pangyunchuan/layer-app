@@ -2,69 +2,45 @@ import Params from "./child/Params";
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from "axios";
 import Loading from "./child/Loading";
 import Model from "./Model";
+import Request from "./child/Request";
+import CancelMan from "./child/CancelMan";
 
-export type ApiRequestMid<This extends ApiModel = ApiModel> = (this: This, c: AxiosRequestConfig) => Promise<AxiosRequestConfig>
-export type ApiRequestErrMid<This extends ApiModel = ApiModel> = (this: This, c: Error | AxiosRequestConfig | any) => Promise<any>
-export type ApiResponseMid<This extends ApiModel = ApiModel> = (this: This, c: AxiosResponse) => Promise<AxiosResponse>
-export type ApiResponseErrMid<This extends ApiModel = ApiModel> = (this: This, c: Error | AxiosResponse | any) => Promise<any>
-
+export type ApiRequestMid<This extends ApiModel = ApiModel> = (m: This, r: AxiosRequestConfig) => AxiosRequestConfig | Promise<AxiosRequestConfig>
+export type ApiResponseMid<This extends ApiModel = ApiModel> = (m: This, r: AxiosResponse) => AxiosResponse | Promise<AxiosResponse>
+export type ApiFinallyMid<This extends ApiModel = ApiModel> = (m: This, re?: any) => void | Promise<void>
 
 export default abstract class ApiModel extends Model {
-    protected readonly http: AxiosInstance = axios.create()
+    readonly http: AxiosInstance = axios.create()
     abstract url: string
     //可配置一些通用请求配置
-    protected axiosConfig: AxiosRequestConfig = {}
+    readonly defaultConfig: AxiosRequestConfig = {}
+    //请求数据
     params?: Params<any>
+    //请求data
     data?: Params<any>
-    res: any | undefined
-    abortController?: AbortController
+    readonly cancelMan?: CancelMan
+    //加载控制
     loading?: boolean | Loading<any, any>
-    protected reqMid: ApiRequestMid[] = []
-    protected reqErrMid: ApiResponseErrMid[] = []
-    protected resMid: ApiResponseMid[] = []
-    protected resErrMid: ApiResponseErrMid[] = []
+    //请求拦截
+    readonly reqMid: ApiRequestMid[] = []
+    //响应拦截
+    readonly resMid: ApiResponseMid[] = []
+    //结束拦截
+    readonly finallyMid: ApiFinallyMid[] = []
 
-    async run<T = any, R = AxiosResponse<T>, D = any>(c: AxiosRequestConfig = {}) {
-        const reqMidRun = new Promise<AxiosRequestConfig>((resolve) => {
-            return resolve({
-                ...this.axiosConfig,
-                ...c,
-                url: this.url,
-                params: this.params?.transform(),
-                data: this.data?.transform(),
-                signal: this.abortController?.signal
-            })
-        })
-        try {
-            for (const reqMid of this.reqMid) {
-                reqMidRun.then(<any>reqMid.bind(<any>this))
-            }
-            //如何跳出异常?
-            for (const reqErr of this.reqErrMid) {
-                reqMidRun.catch(reqErr.bind(<any>this))
-            }
-        } catch (e) {
-            return Promise.reject(e);
-        }
+    //响应数据
+    resData: any | undefined
 
-        const httpConfig = await reqMidRun;
+    //请求类
+    readonly request: Request
 
-        const req = this.http.request<T, R, D>(httpConfig);
-        try {
-            for (const resMidElement of this.resMid) {
-                req.then(<any>resMidElement.bind(<any>this))
-            }
-            for (const resErrMid of this.resErrMid) {
-                req.catch(resErrMid.bind(<any>this))
-            }
-        } catch (e) {
-            return Promise.reject(e);
-        }
+    constructor() {
+        super();
+        this.request = new Request(this)
+    }
 
-        return req;
+    //获取模型数据
+    async getResData(c?: AxiosRequestConfig) {
+        return this.request.getResData(c)
     }
 }
-
-
-
-
